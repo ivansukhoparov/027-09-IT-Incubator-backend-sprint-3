@@ -14,7 +14,6 @@ export const app = express();
 app.use(express.json());
 app.use(cors(settings.cors.options));
 app.use(cookieParser());
-
 app.use("/testing", testingRouter);
 
 app.use("/videos", videosRouter);

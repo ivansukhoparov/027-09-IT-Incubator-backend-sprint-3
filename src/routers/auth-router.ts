@@ -42,6 +42,7 @@ authRouter.post("/login",
         res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true, secure: true})
         res.status(HTTP_STATUSES.OK_200).json({accessToken: tokens.accessToken});
 
+
 })
 
 authRouter.post("/logout",
