@@ -55,6 +55,7 @@ authRouter.post("/logout",
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     })
 
+
 authRouter.post("/refresh-token",
     async (req: Request, res: Response) => {
         const tokens = await AuthService.refreshTokens(req.cookies.refreshToken);
@@ -65,6 +66,7 @@ authRouter.post("/refresh-token",
         res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true, secure: true})
         res.status(HTTP_STATUSES.OK_200).json({accessToken: tokens.accessToken});
     })
+
 
 authRouter.post("/registration",
     registrationValidationChain(),

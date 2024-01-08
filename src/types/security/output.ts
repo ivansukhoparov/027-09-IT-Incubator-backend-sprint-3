@@ -18,3 +18,10 @@ export type SecuritySessionType = {
         expiredAt:string
     }
 }
+
+
+export type ApiRequestType = {
+    ip:string
+    url:string
+    date:Date
+}

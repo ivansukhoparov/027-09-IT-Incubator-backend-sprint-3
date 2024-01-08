@@ -5,6 +5,7 @@ import {VideoType} from "../types/videos/output";
 import {UserType} from "../types/users/output";
 import {CommentType} from "../types/comments/output";
 import {RefreshTokenDBType} from "../types/refresh-token/output";
+import {ApiRequestType} from "../types/security/output";
 
 
 export const dbBlogs = client.db("node-blogs");
@@ -15,3 +16,5 @@ export const videosCollection = dbBlogs.collection<VideoType>("videos");
 export const usersCollection=dbBlogs.collection<UserType>("users");
 export const commentsCollection = dbBlogs.collection<CommentType>("comments");
 export const refreshTokensCollection = dbBlogs.collection<RefreshTokenDBType>("refreshTokens");
+
+export const apiRequestsCollection = dbBlogs.collection<ApiRequestType>("apiRequestCollection")

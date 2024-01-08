@@ -9,11 +9,15 @@ import {commentsRouter} from "./routers/comments-router";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import {settings} from "./settings";
+import {ApiRequestsRepository} from "./repositories/api-requests-repository";
+import {apiRequestCountMiddleware} from "./middlewares/security/api-request-count-middleware";
 export const app = express();
 
 app.use(express.json());
 app.use(cors(settings.cors.options));
 app.use(cookieParser());
+app.use(apiRequestCountMiddleware);
+
 app.use("/testing", testingRouter);
 
 app.use("/videos", videosRouter);
@@ -22,13 +26,3 @@ app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/comments", commentsRouter);
-
-
-app.post('/auth/example', (req: Request, res: Response) => {
-    res.cookie('cookie_name', "htis is cookei! HA!", {httpOnly: true,secure: true})
-    res.status(204).send('Hello samurai from it-incubator!!!')
-})
-app.get('/auth/result',  (req: Request, res: Response) => {
-    const cookie_name= req.cookies
-    res.status(200).json(req.cookies)
-})
