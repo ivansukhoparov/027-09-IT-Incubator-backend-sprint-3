@@ -93,6 +93,7 @@ describe(routerName, () => {
         await request(app).delete("/testing/all-data");
     })
 
+
     it("- should return empty model view after delete all", async () => {
         await request(app).get(routerName)
             .expect(HTTP_STATUSES.OK_200, ViewModelResponse.emptyBody);

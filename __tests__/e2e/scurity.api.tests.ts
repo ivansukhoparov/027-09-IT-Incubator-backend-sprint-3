@@ -76,6 +76,7 @@ console.log(signedInDevices)
     });
 
 
+
     it(" - user registration with empty request should return 400 and errors messages", async () => {
         expect(1).toBe(1)
     })

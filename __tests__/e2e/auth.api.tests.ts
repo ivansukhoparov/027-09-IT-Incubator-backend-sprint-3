@@ -138,6 +138,7 @@ describe(routers.main, () => {
         await request(app).delete("/testing/all-data");
     });
 
+
     it(" - user registration with empty request should return 400 and errors messages", async () => {
         const res = await request(app).post(routers.registration).
     send(testDataUsers.emptyRequest.request).
