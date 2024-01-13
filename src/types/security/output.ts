@@ -14,7 +14,7 @@ export type SecuritySessionType = {
     ip: string
     lastActiveDate: string
     refreshToken:{
-        createdAt:string;
+        createdAt:string
         expiredAt:string
     }
 }
