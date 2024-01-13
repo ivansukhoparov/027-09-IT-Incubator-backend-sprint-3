@@ -10,13 +10,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import {settings} from "./settings";
 import {ApiRequestsRepository} from "./repositories/api-requests-repository";
-import {apiRequestCountMiddleware} from "./middlewares/security/api-request-count-middleware";
+import {apiRequestLimitMiddleware} from "./middlewares/security/api-request-limit-middleware";
 export const app = express();
 
 app.use(express.json());
 app.use(cors(settings.cors.options));
 app.use(cookieParser());
-app.use(apiRequestCountMiddleware);
+app.use(apiRequestLimitMiddleware);
 
 app.use("/testing", testingRouter);
 
