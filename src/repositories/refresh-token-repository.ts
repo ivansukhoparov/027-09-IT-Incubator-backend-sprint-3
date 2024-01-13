@@ -2,7 +2,7 @@ import {refreshTokensCollection} from "../db/db-collections";
 
 export class RefreshTokenRepository {
 
-    static async addToken(token:string){
+    static async addToBlackList(token:string){
         const isSuccess = await refreshTokensCollection.insertOne({token:token});
         return !!isSuccess;
     }

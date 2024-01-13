@@ -5,11 +5,13 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import {AuthOutputType} from "../types/auth/otput";
 import {UsersDomain} from "./users-domain";
-import {EmailAdapter} from "../adapters/email-adapter";
+import {EmailAdapter} from "../common/utils/adapters/email/email-adapter";
 import {add} from "date-fns/add";
 import {btoa} from "buffer";
 import {v4 as uuidv4} from "uuid";
 import {RefreshTokenRepository} from "../repositories/refresh-token-repository";
+import {RefreshToken} from "../common/utils/refresh-token";
+import {AccessToken} from "../common/utils/access-token";
 
 dotenv.config();
 
@@ -28,49 +30,34 @@ export class AuthService {
         const isSuccess = await bcrypt.compare(password, user.hash);
         if (!isSuccess) return null;
 
-        const accessToken = this._createNewAccessToken(user.id,"10s");
-        const refreshToken = this._createNewRefreshToken(user.id,"20s");
-        return {accessToken: accessToken,refreshToken: refreshToken}
+        const deviceId = "";
+
+        return this._getTokens(user.id, deviceId);
 
     }
-    static async killTokens(oldRefreshToken: string): Promise<AuthOutputType|null> {
-        const isInWhiteList = await RefreshTokenRepository.checkToken(oldRefreshToken);
-        if (isInWhiteList) {
-            return null;
+
+    static async killTokens(oldRefreshToken: string): Promise<boolean> {
+        const isVerified = await RefreshToken.verify(oldRefreshToken);
+        if (!isVerified) {
+            return false;
         }
 
-        try {
-            const result:any = jwt.verify(oldRefreshToken, secretKey.refreshToken);
+        return RefreshTokenRepository.addToBlackList(oldRefreshToken);
 
-            const accessToken = this._createNewAccessToken(result.userId,"0s");
-            const refreshToken = this._createNewRefreshToken(result.userId,"0s");
-            await RefreshTokenRepository.addToken(oldRefreshToken);
-            return {accessToken: accessToken, refreshToken: refreshToken};
-
-        }catch (err){
-
-            return null;
-        }
     }
 
 
     static async refreshTokens(oldRefreshToken: string): Promise<AuthOutputType|null> {
-        const isInWhiteList = await RefreshTokenRepository.checkToken(oldRefreshToken);
-        if (isInWhiteList) {
-            return null;
-        };
-
-        try {
-            const result:any = jwt.verify(oldRefreshToken, secretKey.refreshToken);
-
-            const accessToken = this._createNewAccessToken(result.userId,"10s");
-            const refreshToken = this._createNewRefreshToken(result.userId,"20s");
-            await RefreshTokenRepository.addToken(oldRefreshToken);
-            return {accessToken: accessToken, refreshToken: refreshToken};
-        }catch (err){
-
+        const isVerified = await RefreshToken.verify(oldRefreshToken);
+        if (!isVerified) {
             return null;
         }
+
+        await RefreshTokenRepository.addToBlackList(oldRefreshToken);
+
+        const decodedToken: any = RefreshToken.decode(oldRefreshToken);
+        return this._getTokens(decodedToken.userId, decodedToken.deviceId);
+
     }
 
     static async getUserIdByToken(token:string):Promise<string|null>{
@@ -140,10 +127,11 @@ export class AuthService {
         const confirmationCodeExpiration = add(new Date, lifeTime).toISOString()
         return `${btoa(uuidv4())}:${btoa(email)}:${btoa(confirmationCodeExpiration)}`
     }
-    static _createNewAccessToken(userId:string,expiresIn:string){
-        return jwt.sign({userId:userId}, secretKey.accessToken, {expiresIn: expiresIn});
+
+    static _getTokens(userId: string, deviceId: string): AuthOutputType {
+        const accessToken = AccessToken.create(userId);
+        const refreshToken = RefreshToken.create(userId, deviceId);
+        return {accessToken: accessToken, refreshToken: refreshToken};
     }
-    static  _createNewRefreshToken(userId:string,expiresIn:string){
-        return jwt.sign({userId:userId, token:uuidv4()}, secretKey.refreshToken, {expiresIn: expiresIn});
-    }
+
 }
