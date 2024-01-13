@@ -12,6 +12,7 @@ import {v4 as uuidv4} from "uuid";
 import {RefreshTokenRepository} from "../repositories/refresh-token-repository";
 import {RefreshToken} from "../common/utils/refresh-token";
 import {AccessToken} from "../common/utils/access-token";
+import {SecurityService} from "./security-service";
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ const secretKey = {
 
 export class AuthService {
 
-    static async loginUser(loginOrEmail: string, password: string): Promise<AuthOutputType | null> {
+    static async loginUser(loginOrEmail: string, password: string, deviceTitle: string, ip:string): Promise<AuthOutputType | null> {
 
         const user:UserOutputAuthType|null = await UsersRepository.getUserByLoginOrEmail(loginOrEmail);
         if (!user) return null;
@@ -30,34 +31,36 @@ export class AuthService {
         const isSuccess = await bcrypt.compare(password, user.hash);
         if (!isSuccess) return null;
 
-        const deviceId = "";
+        const deviceId = uuidv4();
 
-        return this._getTokens(user.id, deviceId);
+        const tokens = this._getTokens(user.id, deviceId);
 
+        const sessionIsCreate = await SecurityService.createAuthSession(tokens.refreshToken,deviceTitle,ip);
+        if (!sessionIsCreate) return null;
+        return tokens;
     }
 
     static async killTokens(oldRefreshToken: string): Promise<boolean> {
         const isVerified = await RefreshToken.verify(oldRefreshToken);
-        if (!isVerified) {
-            return false;
-        }
+        if (!isVerified) return false;
 
         return RefreshTokenRepository.addToBlackList(oldRefreshToken);
-
     }
 
 
     static async refreshTokens(oldRefreshToken: string): Promise<AuthOutputType|null> {
         const isVerified = await RefreshToken.verify(oldRefreshToken);
-        if (!isVerified) {
-            return null;
-        }
+        if (!isVerified) return null;
 
         await RefreshTokenRepository.addToBlackList(oldRefreshToken);
 
-        const decodedToken: any = RefreshToken.decode(oldRefreshToken);
-        return this._getTokens(decodedToken.userId, decodedToken.deviceId);
+        const decodedToken = RefreshToken.decode(oldRefreshToken);
+        if (!decodedToken) return null;
 
+        const isSessionUpdate = await SecurityService.updateAuthSession(oldRefreshToken);
+        if (!isSessionUpdate) return null;
+
+        return this._getTokens(decodedToken.userId, decodedToken.deviceId);
     }
 
     static async getUserIdByToken(token:string):Promise<string|null>{

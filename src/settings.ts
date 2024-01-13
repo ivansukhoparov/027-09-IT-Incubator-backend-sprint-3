@@ -14,7 +14,7 @@ const defaultSettings = {
 
     requestLimit:{
         interval: 10, // interval in seconds
-        count:5 // count of requests in interval
+        count:5000 // count of requests in interval
     }
 }
 

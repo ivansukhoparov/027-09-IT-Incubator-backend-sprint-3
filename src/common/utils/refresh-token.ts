@@ -1,6 +1,7 @@
 import {JwtToken} from "./adapters/jwt-tokens";
 import {settings} from "../../settings";
 import {RefreshTokenRepository} from "../../repositories/refresh-token-repository";
+import {RefreshTokenPayloadType} from "../../types/refresh-token/output";
 
 
 const secretKeyRefreshToken = process.env.REFRESH_TOKEN_SECRET_KEY!;
@@ -22,7 +23,18 @@ export class RefreshToken {
         return JwtToken.verify(token, secretKey);
     }
 
-    static decode = (token: string) => {
-        return JwtToken.decode(token);
+    static decode = (token: string): RefreshTokenPayloadType | null => {
+        try {
+            const decodedToken: any = JwtToken.decode(token);
+            return {
+                userId: decodedToken.userId,
+                deviceId: decodedToken.deviceId,
+                iat: decodedToken.iat,
+                exp: decodedToken.exp
+            }
+        } catch (err) {
+            return null
+        }
     }
+
 }

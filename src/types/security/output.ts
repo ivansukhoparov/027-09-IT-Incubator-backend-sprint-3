@@ -7,18 +7,24 @@ export type SecurityDevicesOutput = {
 
 
 export type SecuritySessionType = {
-    sessionId:string
     userId:string
     deviceId: string
     deviceTitle: string
     ip: string
-    lastActiveDate: string
+    lastActiveDate: number
     refreshToken:{
-        createdAt:string
-        expiredAt:string
+        createdAt:number
+        expiredAt:number
     }
 }
 
+export type SecuritySessionUpdateType = {
+    lastActiveDate: number
+    refreshToken:{
+        createdAt:number
+        expiredAt:number
+    }
+}
 
 export type ApiRequestType = {
     ip:string

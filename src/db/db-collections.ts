@@ -5,7 +5,7 @@ import {VideoType} from "../types/videos/output";
 import {UserType} from "../types/users/output";
 import {CommentType} from "../types/comments/output";
 import {RefreshTokenDBType} from "../types/refresh-token/output";
-import {ApiRequestType} from "../types/security/output";
+import {ApiRequestType, SecuritySessionType} from "../types/security/output";
 
 
 export const dbBlogs = client.db("node-blogs");
@@ -18,3 +18,4 @@ export const commentsCollection = dbBlogs.collection<CommentType>("comments");
 export const refreshTokensCollection = dbBlogs.collection<RefreshTokenDBType>("refreshTokens");
 
 export const apiRequestsCollection = dbBlogs.collection<ApiRequestType>("apiRequestCollection")
+export const securityCollection = dbBlogs.collection<SecuritySessionType>("securityCollection")

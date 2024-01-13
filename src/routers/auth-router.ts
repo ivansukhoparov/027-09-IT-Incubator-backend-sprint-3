@@ -32,15 +32,18 @@ authRouter.post("/login",
     inputValidationMiddleware,
     async (req: Request ,res: Response) => {
 
-        const tokens = await AuthService.loginUser(req.body.loginOrEmail, req.body.password);
+        const deviceTitle = req.header("user-agent")?.split(" ")[1] || "unknown"
+        const ip = req.ip || "unknown"
 
-        if (!tokens) {
+        const isLoggedIn = await AuthService.loginUser(req.body.loginOrEmail, req.body.password, deviceTitle, ip);
+
+        if (!isLoggedIn) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return
         }
 
-        res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true, secure: true})
-        res.status(HTTP_STATUSES.OK_200).json({accessToken: tokens.accessToken});
+        res.cookie('refreshToken', isLoggedIn.refreshToken, {httpOnly: true, secure: true})
+        res.status(HTTP_STATUSES.OK_200).json({accessToken: isLoggedIn.accessToken});
 
 
 })

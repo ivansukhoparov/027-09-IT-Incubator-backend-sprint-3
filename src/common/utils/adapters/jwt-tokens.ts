@@ -17,4 +17,5 @@ export class JwtToken {
     static decode = (token: string) => {
         return jwt.decode(token);
     }
+
 }
