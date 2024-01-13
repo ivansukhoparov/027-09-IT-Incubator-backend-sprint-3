@@ -1,4 +1,4 @@
-import {EmailMessage} from "../types/email/input";
+import {EmailMessage} from "../../../../types/email/input";
 
 export const emailManager = {
     confirmationEmail: (confirmationCode: string, name:string): EmailMessage => ({

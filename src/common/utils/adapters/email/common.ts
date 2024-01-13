@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import {emailLogin, emailPassword} from "../utils/comon";
+import {emailLogin, emailPassword} from "../../../../utils/comon";
 
 dotenv.config();
 

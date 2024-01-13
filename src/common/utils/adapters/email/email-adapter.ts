@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import {emailFrom, transporterOption} from "./common";
-import {EmailMessage} from "../types/email/input";
-import {UserOutputAuthType} from "../types/users/output";
+import {EmailMessage} from "../../../../types/email/input";
+import {UserOutputAuthType} from "../../../../types/users/output";
 import {emailManager} from "./email-manager";
 
 export class EmailAdapter {
