@@ -21,4 +21,18 @@ export class SecurityRepository {
         return !!isUpdated.matchedCount
     }
 
+    static async deleteSession(deviceId: string) {
+        const isDeleted = await securityCollection.deleteOne({deviceId: deviceId})
+        return !!isDeleted.deletedCount
+    }
+
+    static async getSessionByDeviceId(deviceId: string) {
+        return await securityCollection.findOne({deviceId:deviceId});
+    }
+
+static async deleteSessionsExpectCurrent(userId:string,deviceId:string){
+        const isDeleted = await securityCollection.deleteMany({$and:[{userId: userId},{deviceId: {$not: {$eq:deviceId}}}]})
+    return isDeleted.deletedCount!==0
+}
+
 }

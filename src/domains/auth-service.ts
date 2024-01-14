@@ -57,10 +57,11 @@ export class AuthService {
         const decodedToken = RefreshToken.decode(oldRefreshToken);
         if (!decodedToken) return null;
 
-        const isSessionUpdate = await SecurityService.updateAuthSession(oldRefreshToken);
+        const tokens = this._getTokens(decodedToken.userId, decodedToken.deviceId);
+        const isSessionUpdate = await SecurityService.updateAuthSession(tokens.refreshToken);
         if (!isSessionUpdate) return null;
 
-        return this._getTokens(decodedToken.userId, decodedToken.deviceId);
+        return tokens;
     }
 
     static async getUserIdByToken(token:string):Promise<string|null>{

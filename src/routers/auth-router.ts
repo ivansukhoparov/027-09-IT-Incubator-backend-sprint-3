@@ -15,6 +15,7 @@ import {
     registrationValidationChain,
     uniqueLoginOrEmail
 } from "../middlewares/validators/registration-validator";
+import {SecurityService} from "../domains/security-service";
 
 export const authRouter=Router();
 
@@ -55,6 +56,7 @@ authRouter.post("/logout",
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return
         }
+       await SecurityService.terminateCurrentSession(req.cookies.refreshToken);
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     })
 

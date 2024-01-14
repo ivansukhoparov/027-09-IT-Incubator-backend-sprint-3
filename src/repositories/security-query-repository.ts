@@ -8,4 +8,12 @@ export class SecurityQueryRepository {
         const sessions =  await securityCollection.find({userId:userId}).toArray();
         return sessions.map(securityMapper);
     }
+
+    static async getSessionByDeviceId(deviceId: string) {
+        const session =  await securityCollection.findOne({deviceId:deviceId});
+        if (!session){
+            return null
+        }
+        return securityMapper(session);
+    }
 }
