@@ -3,9 +3,11 @@ import {SecurityDevicesOutput, SecuritySessionType} from "./output";
 
 export const securityMapper = (session:WithId<SecuritySessionType>):SecurityDevicesOutput=>{
     return {
+        deviceId: session.deviceId,
         ip: session.ip,
-        title: session.deviceTitle,
-        lastActiveDate: session.lastActiveDate,
-        deviceId: session.deviceId
+        lastActiveDate: new Date(session.lastActiveDate).toISOString(),
+        title: session.deviceTitle
+
+
     }
 }
