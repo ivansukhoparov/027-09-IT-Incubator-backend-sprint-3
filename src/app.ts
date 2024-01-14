@@ -11,12 +11,13 @@ import cors from "cors";
 import {settings} from "./settings";
 import {ApiRequestsRepository} from "./repositories/api-requests-repository";
 import {apiRequestLimitMiddleware} from "./middlewares/security/api-request-limit-middleware";
+import {securityRouter} from "./routers/security-router";
 export const app = express();
 
 app.use(express.json());
 app.use(cors(settings.cors.options));
 app.use(cookieParser());
-app.use(apiRequestLimitMiddleware);
+//app.use(apiRequestLimitMiddleware);
 
 app.use("/testing", testingRouter);
 
@@ -24,5 +25,7 @@ app.use("/videos", videosRouter);
 app.use("/blogs", blogsRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
-app.use("/auth", authRouter);
+app.use("/auth", apiRequestLimitMiddleware, authRouter);
+//app.use("/auth", apiRequestLimitMiddleware);
 app.use("/comments", commentsRouter);
+app.use("/security", securityRouter);
