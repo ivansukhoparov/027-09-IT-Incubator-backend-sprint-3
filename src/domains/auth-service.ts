@@ -10,8 +10,7 @@ import {add} from "date-fns/add";
 import {btoa} from "buffer";
 import {v4 as uuidv4} from "uuid";
 import {RefreshTokenRepository} from "../repositories/refresh-token-repository";
-import {RefreshToken} from "../common/utils/refresh-token";
-import {AccessToken} from "../common/utils/access-token";
+import {Tokens} from "../common/utils/tokens";
 import {SecurityService} from "./security-service";
 
 dotenv.config();
@@ -39,22 +38,19 @@ export class AuthService {
         if (!sessionIsCreate) return null;
         return tokens;
     }
-
     static async killTokens(oldRefreshToken: string): Promise<boolean> {
-        const isVerified = await RefreshToken.verify(oldRefreshToken);
+        const isVerified = await Tokens.verifyRefreshToken(oldRefreshToken);
         if (!isVerified) return false;
 
         return RefreshTokenRepository.addToBlackList(oldRefreshToken);
     }
-
-
     static async refreshTokens(oldRefreshToken: string): Promise<AuthOutputType|null> {
-        const isVerified = await RefreshToken.verify(oldRefreshToken);
+        const isVerified = await Tokens.verifyRefreshToken(oldRefreshToken);
         if (!isVerified) return null;
 
         await RefreshTokenRepository.addToBlackList(oldRefreshToken);
 
-        const decodedToken = RefreshToken.decode(oldRefreshToken);
+        const decodedToken = Tokens.decodeRefreshToken(oldRefreshToken);
         if (!decodedToken) return null;
 
         const tokens = this._getTokens(decodedToken.userId, decodedToken.deviceId);
@@ -63,7 +59,6 @@ export class AuthService {
 
         return tokens;
     }
-
     static async getUserIdByToken(token:string):Promise<string|null>{
         try {
             const result:any = jwt.verify(token, secretKey.accessToken);
@@ -85,7 +80,6 @@ export class AuthService {
         }
         return true;
     }
-
     static async refreshEmailConfirmationCode(email: string) {
         const newConfirmationCode = this._createConfirmationCode(email);
         const isUserUpdated = await UsersDomain.updateUserEmailConfirmationCode( email, newConfirmationCode);
@@ -94,7 +88,6 @@ export class AuthService {
         if (!user) return false;
         return await EmailAdapter.reSendEmailConfirmationEmail(user);
     }
-
     static async confirmEmail(confirmationCode: string) {
 
         const receiptedCode = this._confirmationCodeToData(confirmationCode);
@@ -115,6 +108,19 @@ export class AuthService {
         return isConfirmed;
     }
 
+    static async passwordRecovery(email: string) {
+        // Check email is exist
+        const user = await UsersRepository.getUserByLoginOrEmail(email);
+        if (!user) return;
+
+        // Create recovery code and write down it to db with email and user id
+        const recoveryCode = this._createRecoveryCode(user.id);
+
+        // Send email with recovery code
+        const isEmailSend: boolean = await EmailAdapter.sendPasswordRecoveryCode(user, recoveryCode);
+        return;
+    }
+
     static _confirmationCodeToData(code: string) {
         try{
             const mappedCode = code.split(":").map(el => atob(el));
@@ -132,10 +138,13 @@ export class AuthService {
         return `${btoa(uuidv4())}:${btoa(email)}:${btoa(confirmationCodeExpiration)}`
     }
 
+    static _createRecoveryCode(userId: string) {
+        return Tokens.createPasswordRecoveryToken(userId)
+    }
     static _getTokens(userId: string, deviceId: string): AuthOutputType {
-        const accessToken = AccessToken.create(userId);
-        const refreshToken = RefreshToken.create(userId, deviceId);
-        return {accessToken: accessToken, refreshToken: refreshToken};
+        const accessToken = Tokens.createAccessToken(userId);
+        const refreshToken = Tokens.createRefreshToken(userId, deviceId);
+        return {accessToken, refreshToken};
     }
 
 }
