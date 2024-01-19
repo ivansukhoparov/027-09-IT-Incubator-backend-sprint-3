@@ -7,7 +7,7 @@ import {
 } from "../types/auth/input";
 import {AuthService} from "../domains/auth-service";
 import {HTTP_STATUSES} from "../utils/comon";
-import {loginValidationChain} from "../middlewares/validators/auth-validators";
+import {emailValidator, loginValidationChain} from "../middlewares/validators/auth-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {
@@ -19,7 +19,9 @@ import {SecurityService} from "../domains/security-service";
 
 export const authRouter=Router();
 
-authRouter.get("/me", AuthorizationMiddleware, async (req: Request, res: Response) => {
+authRouter.get("/me",
+    AuthorizationMiddleware,
+    async (req: Request, res: Response) => {
     const user = {
         login: req.user!.login,
         email: req.user!.email,
@@ -115,4 +117,18 @@ authRouter.post("/registration-email-resending",
 
 })
 
+authRouter.post("/password-recovery",
+    emailValidator,
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+        await AuthService.passwordRecovery(req.body.email)
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+    })
 
+
+authRouter.post("/new-password",
+    emailValidator,
+    async (req: Request, res: Response) => {
+
+
+    })
