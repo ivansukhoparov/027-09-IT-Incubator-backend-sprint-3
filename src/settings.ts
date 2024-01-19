@@ -3,19 +3,19 @@ const defaultSettings = {
     cors:{
         options:{}
     },
-
     refreshToken:{
         expiredIn:"20s"
     },
-
     accessToken:{
         expiredIn:"10s"
     },
-
+    recoveryToken:{
+        expiredIn:"24h"
+    },
     requestLimit:{
         interval: 10, // interval in seconds
         count:5 // count of requests in interval
-    }
+    },
 }
 
 const testSettings:typeof defaultSettings = {
@@ -25,20 +25,19 @@ const testSettings:typeof defaultSettings = {
             credentials: true,
         }
     },
-
     refreshToken:{
-        expiredIn:"200s"
+        expiredIn:"30d"
     },
-
     accessToken:{
-        expiredIn:"100s"
+        expiredIn:"1h"
     },
-
+    recoveryToken:{
+        expiredIn:"24h"
+    },
     requestLimit:{
         interval: 10, // interval in seconds
         count:5 // count of requests in interval
     }
-
 }
 
 export const settings = defaultSettings;
