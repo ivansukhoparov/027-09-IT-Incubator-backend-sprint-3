@@ -6,26 +6,27 @@ import {emailManager} from "./email-manager";
 
 export class EmailAdapter {
     static async sendEmailConfirmationEmail(user: UserOutputAuthType) {
-        const isEmailSent =await this._sendEmail(user.email,
-            emailFrom.registrationService,
+        return await this._sendEmail(user.email, emailFrom.registrationService,
             emailManager.confirmationEmail(user.emailConfirmation.confirmationCode,user.email));
-        if (!isEmailSent) return false;
-        return true;
     }
+
     static async reSendEmailConfirmationEmail(user: UserOutputAuthType) {
-        const isEmailSent =await this._sendEmail(user.email,
-            emailFrom.registrationService,
+        return await this._sendEmail(user.email, emailFrom.registrationService,
             emailManager.reConfirmationEmail(user.emailConfirmation.confirmationCode,user.email));
-        if (!isEmailSent) return false;
-        return true;
     }
-    static async _sendEmail(mailTo: string, mailFrom: string, emailMessage: EmailMessage) {
+
+    static async sendPasswordRecoveryCode(user: UserOutputAuthType, recoveryCode:string) {
+        return await this._sendEmail(user.email, emailFrom.passwordRecoveryService,
+            emailManager.resetPassword(recoveryCode));
+    }
+
+    static async _sendEmail(mailTo: string, sendFrom: string, emailMessage: EmailMessage) {
         try {
             const transporter = nodemailer.createTransport(transporterOption);
             const sentEmailInfo = await transporter.sendMail(
                 {
                     ...emailMessage,
-                    from: mailFrom,
+                    from: sendFrom,
                     to: mailTo,
                 });
             //  console.log("email sent");
