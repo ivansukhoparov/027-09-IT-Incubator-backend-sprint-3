@@ -4,7 +4,8 @@ import {emailLogin, emailPassword} from "../../../../utils/comon";
 dotenv.config();
 
 export const emailFrom = {
-    registrationService: '"no-reply bloggers platform" <sukhoparov.ivan@gmail.com>'
+    registrationService: '"no-reply bloggers platform" <sukhoparov.ivan@gmail.com>',
+    passwordRecoveryService: '"no-reply bloggers platform" <no-reply@bggpf.com>'
 }
 
 export const transporterOption = {
