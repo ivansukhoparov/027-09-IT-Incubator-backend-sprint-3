@@ -3,11 +3,16 @@ import {RequestWithBody} from "../types/common";
 import {
     EmailConfirmationCodeResendRequestType,
     EmailConfirmationCodeType,
+    PasswordRecoveryRequestType,
     RegistrationInfoType
 } from "../types/auth/input";
 import {AuthService} from "../domains/auth-service";
 import {HTTP_STATUSES} from "../utils/comon";
-import {emailValidator, loginValidationChain} from "../middlewares/validators/auth-validators";
+import {
+    emailValidator,
+    loginValidationChain,
+    newPasswordValidation
+} from "../middlewares/validators/auth-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {
@@ -121,14 +126,26 @@ authRouter.post("/password-recovery",
     emailValidator,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        await AuthService.passwordRecovery(req.body.email)
+        await AuthService.passwordRecoveryCode(req.body.email)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     })
 
 
 authRouter.post("/new-password",
-    emailValidator,
-    async (req: Request, res: Response) => {
+    newPasswordValidation,
+    inputValidationMiddleware,
+    async (req: RequestWithBody<PasswordRecoveryRequestType>, res: Response) => {
+        const {newPassword, recoveryCode} = req.body;
+        const result = await AuthService.setNewPassword({newPassword, recoveryCode});
+        if (!result) {
+            res.status(HTTP_STATUSES.BAD_REQUEST_400).json({
+                errorsMessages: [{
+                    message: "Invalid code or expiration date expired",
+                    field: "recoveryCode"
+                }]
+            });
+            return;
+        }
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 
-
-    })
+    } )

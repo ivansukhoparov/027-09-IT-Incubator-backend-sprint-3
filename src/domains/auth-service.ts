@@ -12,6 +12,8 @@ import {v4 as uuidv4} from "uuid";
 import {RefreshTokenRepository} from "../repositories/refresh-token-repository";
 import {Tokens} from "../common/utils/tokens";
 import {SecurityService} from "./security-service";
+import {PasswordRecoveryRequestType} from "../types/auth/input";
+import {Password} from "../common/utils/password";
 
 dotenv.config();
 
@@ -108,7 +110,7 @@ export class AuthService {
         return isConfirmed;
     }
 
-    static async passwordRecovery(email: string) {
+    static async passwordRecoveryCode(email: string) {
         // Check email is exist
         const user = await UsersRepository.getUserByLoginOrEmail(email);
         if (!user) return;
@@ -119,6 +121,20 @@ export class AuthService {
         // Send email with recovery code
         const isEmailSend: boolean = await EmailAdapter.sendPasswordRecoveryCode(user, recoveryCode);
         return;
+    }
+
+    static async setNewPassword({newPassword, recoveryCode}:PasswordRecoveryRequestType){
+        const isVerified = await Tokens.verifyPasswordRecoveryToken(recoveryCode);
+        if (!isVerified) return false;
+
+        const userId = await Tokens.decodePasswordRecoveryToken(recoveryCode)
+        if (!userId) return false;
+
+        const newPasswordHash = await Password.getNewHash(newPassword);
+        const isUpdated = await UsersRepository.updateUserPasswordHash(userId,newPasswordHash);
+
+        return isUpdated
+
     }
 
     static _confirmationCodeToData(code: string) {

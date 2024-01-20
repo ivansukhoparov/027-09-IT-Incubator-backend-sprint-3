@@ -76,5 +76,17 @@ export class Tokens {
         return JwtToken.create({userId: userId}, {expiresIn: expiresIn}, secretKey);
 
     };
+    static verifyPasswordRecoveryToken = async (token: string,
+                                                secretKey: string = secretKeyRecoveryToken) => {
+        return JwtToken.verify(token, secretKey);
+    }
 
+    static decodePasswordRecoveryToken = async (token: string):Promise<string|null> => {
+        try {
+            const decodedToken: any = JwtToken.decode(token);
+            return decodedToken.userId
+        } catch (err) {
+            return null
+        }
+    }
 }

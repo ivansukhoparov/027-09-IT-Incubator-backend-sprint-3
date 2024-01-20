@@ -58,6 +58,17 @@ export class UsersRepository {
         }
     }
 
+    static async updateUserPasswordHash (userId:string,newHash:string){
+        try{
+            const isUpdated = await usersCollection.updateOne(
+                {_id:new ObjectId(userId)},
+                {$set:{hash:newHash}});
+            return isUpdated.matchedCount === 1;
+        }catch (err){
+            return false
+        }
+    }
+
     static async createUser(createData: UserType): Promise<string | null> {
         try {
             const result = await usersCollection.insertOne(createData);

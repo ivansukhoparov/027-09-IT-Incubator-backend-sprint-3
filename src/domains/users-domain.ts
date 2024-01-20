@@ -42,26 +42,13 @@ export class UsersDomain {
 
     static async updateUserEmailConfirmationCode (email:string, code:string){
         try {
-            const isUpdated = await usersCollection.updateOne({email: email}, {$set: {"emailConfirmation.confirmationCode": code}});
+            const isUpdated = await usersCollection.updateOne(
+                {email: email},
+                {$set: {"emailConfirmation.confirmationCode": code}});
             return isUpdated.matchedCount===1;
         }catch (err){
             return false
         }
     }
 
-    static async updateUserCustomFields(filterKey: string, filterValue: string, updateData: UserUpdateType) {
-        const user = await UsersRepository.getUserByCustomKey(filterKey, filterValue);
-        if (!user) return false;
-        const newData: UserType = {
-            ...user,
-            ...updateData,
-            emailConfirmation: {
-                ...user.emailConfirmation,
-                ...updateData.emailConfirmation
-            }
-        }
-
-        const isUpdated = await UsersRepository.updateUserCustomFields(filterKey, filterValue, newData);
-        return isUpdated
-    }
 }

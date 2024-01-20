@@ -16,3 +16,8 @@ export type EmailConfirmationCodeType = {
 export type EmailConfirmationCodeResendRequestType = {
     email: string
 }
+
+export type PasswordRecoveryRequestType = {
+    newPassword: string
+    recoveryCode: string
+}

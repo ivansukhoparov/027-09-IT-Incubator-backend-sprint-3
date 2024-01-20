@@ -4,10 +4,10 @@ const defaultSettings = {
         options:{}
     },
     refreshToken:{
-        expiredIn:"20s"
+        expiredIn:"30d"
     },
     accessToken:{
-        expiredIn:"10s"
+        expiredIn:"30m"
     },
     recoveryToken:{
         expiredIn:"24h"
