@@ -1,7 +1,7 @@
 //import request from 'supertest';
 import request = require("supertest");
 import {app} from "../../src/app";
-import {blogCollection} from "../../src/db/db-collections";
+import {blogCollection} from "../../src/db/mongo/mongo-collections";
 import {BlogOutputType} from "../../src/types/blogs/output";
 
 

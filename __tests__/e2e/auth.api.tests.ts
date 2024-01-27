@@ -3,7 +3,7 @@ import {app} from "../../src/app";
 import {ErrorsMessageType, ErrorType} from "../../src/types/common";
 import {UsersRepository} from "../../src/repositories/users-repository";
 import {AuthService} from "../../src/domains/auth-service";
-import {usersCollection} from "../../src/db/db-collections";
+import {usersCollection} from "../../src/db/mongo/mongo-collections";
 
 const routers = {
     main: "/auth",

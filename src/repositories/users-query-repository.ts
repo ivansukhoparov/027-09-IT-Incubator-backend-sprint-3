@@ -1,5 +1,5 @@
 import {SearchUsersRepositoryType, SortUsersRepositoryType} from "../types/users/input";
-import {usersCollection} from "../db/db-collections";
+import {usersCollection} from "../db/mongo/mongo-collections";
 import {WithId} from "mongodb";
 import {UserType} from "../types/users/output";
 import {userMapper} from "../types/users/mapper";

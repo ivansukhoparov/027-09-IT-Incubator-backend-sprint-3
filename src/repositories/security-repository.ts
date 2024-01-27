@@ -1,5 +1,5 @@
 import {SecurityDevicesOutput, SecuritySessionType, SecuritySessionUpdateType} from "../types/security/output";
-import {securityCollection} from "../db/db-collections";
+import {securityCollection} from "../db/mongo/mongo-collections";
 import {securityMapper} from "../types/security/mapper";
 
 

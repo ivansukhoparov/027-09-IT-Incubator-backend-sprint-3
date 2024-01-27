@@ -2,7 +2,7 @@ import {Tokens} from "../common/utils/tokens";
 import {SecurityRepository} from "../repositories/security-repository";
 import {throws} from "assert";
 import {SecuritySessionUpdateType} from "../types/security/output";
-import {securityCollection} from "../db/db-collections";
+import {securityCollection} from "../db/mongo/mongo-collections";
 import {SecurityQueryRepository} from "../repositories/security-query-repository";
 import {compareSync} from "bcrypt";
 

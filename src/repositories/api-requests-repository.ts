@@ -1,4 +1,4 @@
-import {apiRequestsCollection} from "../db/db-collections";
+import {apiRequestsCollection} from "../db/mongo/mongo-collections";
 
 export class ApiRequestsRepository {
     static async writeRequest(ip: string, url: string) {

@@ -1,5 +1,5 @@
 import {UserOutputType, UserType} from "../types/users/output";
-import {usersCollection} from "../db/db-collections";
+import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {userMapper, userMapperAuth} from "../types/users/mapper";
 

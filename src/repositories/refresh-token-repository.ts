@@ -1,4 +1,4 @@
-import {refreshTokensCollection} from "../db/db-collections";
+import {refreshTokensCollection} from "../db/mongo/mongo-collections";
 
 export class RefreshTokenRepository {
 

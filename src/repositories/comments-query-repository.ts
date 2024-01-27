@@ -1,4 +1,4 @@
-import {commentsCollection} from "../db/db-collections";
+import {commentsCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {commentMapper} from "../types/comments/mapper";
 import {SortCommentsType} from "../types/comments/input";

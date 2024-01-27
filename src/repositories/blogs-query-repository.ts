@@ -2,7 +2,7 @@ import {BlogType, BlogOutputType} from "../types/blogs/output";
 import {SearchBlogRepositoryType, SortBlogRepositoryType,} from "../types/blogs/input";
 import {ObjectId, WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
-import {blogCollection} from "../db/db-collections";
+import {blogCollection} from "../db/mongo/mongo-collections";
 import {ViewModelType} from "../types/view-model";
 
 export class BlogsQueryRepository {

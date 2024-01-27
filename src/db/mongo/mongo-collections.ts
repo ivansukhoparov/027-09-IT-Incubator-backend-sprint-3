@@ -1,12 +1,12 @@
-import {client} from "./db";
-import {BlogType} from "../types/blogs/output";
-import {PostType} from "../types/posts/output";
-import {VideoType} from "../types/videos/output";
-import {UserType} from "../types/users/output";
-import {CommentType} from "../types/comments/output";
-import {RefreshTokenDBType} from "../types/refresh-token/output";
-import {ApiRequestType, SecuritySessionType} from "../types/security/output";
-import {settings} from "../settings";
+import {client} from "./mongo-db";
+import {BlogType} from "../../types/blogs/output";
+import {PostType} from "../../types/posts/output";
+import {VideoType} from "../../types/videos/output";
+import {UserType} from "../../types/users/output";
+import {CommentType} from "../../types/comments/output";
+import {RefreshTokenDBType} from "../../types/refresh-token/output";
+import {ApiRequestType, SecuritySessionType} from "../../types/security/output";
+import {settings} from "../../settings";
 
 
 export const dbBlogs = client.db(settings.env.mongoDbName);

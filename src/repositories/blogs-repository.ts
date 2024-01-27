@@ -2,7 +2,7 @@ import {BlogType} from "../types/blogs/output";
 import {UpdateBlogDto} from "../types/blogs/input";
 import {ObjectId, WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
-import {blogCollection} from "../db/db-collections";
+import {blogCollection} from "../db/mongo/mongo-collections";
 
 export class BlogsRepository {
 

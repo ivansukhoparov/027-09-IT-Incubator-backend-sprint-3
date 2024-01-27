@@ -1,7 +1,7 @@
 import {UserOutputType, UserType} from "../types/users/output";
 import {UsersRepository} from "../repositories/users-repository";
 import bcrypt from "bcrypt";
-import {usersCollection} from "../db/db-collections";
+import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {AuthService} from "./auth-service";
 import {UserUpdateType} from "../types/users/input";

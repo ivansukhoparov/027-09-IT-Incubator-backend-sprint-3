@@ -1,4 +1,4 @@
-import {videosCollection} from "../db/db-collections";
+import {videosCollection} from "../db/mongo/mongo-collections";
 import {videosMapper} from "../types/videos/mapper";
 import {CreateVideoDto, UpdateVideoDto} from "../types/videos/input";
 import {VideoType} from "../types/videos/output";

@@ -1,5 +1,5 @@
 import {CommentType} from "../types/comments/output";
-import {commentsCollection} from "../db/db-collections";
+import {commentsCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {UpdateCommentDto} from "../types/comments/input";
 
