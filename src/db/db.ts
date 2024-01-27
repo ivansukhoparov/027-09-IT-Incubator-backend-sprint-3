@@ -1,5 +1,6 @@
 import {MongoClient} from "mongodb";
 import {mongoUri} from "../utils/comon";
+import mongoose from "mongoose";
 
 
 export const client = new MongoClient(mongoUri)
