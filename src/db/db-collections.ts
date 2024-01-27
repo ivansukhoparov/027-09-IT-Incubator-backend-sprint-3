@@ -6,9 +6,10 @@ import {UserType} from "../types/users/output";
 import {CommentType} from "../types/comments/output";
 import {RefreshTokenDBType} from "../types/refresh-token/output";
 import {ApiRequestType, SecuritySessionType} from "../types/security/output";
+import {settings} from "../settings";
 
 
-export const dbBlogs = client.db("node-blogs");
+export const dbBlogs = client.db(settings.env.mongoDbName);
 
 export const blogCollection = dbBlogs.collection<BlogType>("blogs");
 export const postCollection = dbBlogs.collection<PostType>("post");

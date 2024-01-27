@@ -1,5 +1,14 @@
+import dotenv from "dotenv";
+dotenv.config();
 
 const defaultSettings = {
+    env: {
+        mongoUri: "mongodb://0.0.0.0:27017",
+        mongoDbName: "bloggers-platform",
+        port: 5001,
+        emailLogin: process.env.EMAIL_LOGIN!,
+        emailPassword: process.env.EMAIL_PASSWORD!,
+    },
     cors:{
         options:{}
     },
@@ -19,6 +28,13 @@ const defaultSettings = {
 }
 
 const testSettings:typeof defaultSettings = {
+    env: {
+        mongoUri: "mongodb://0.0.0.0:27017",
+        mongoDbName: "bloggers-platform",
+        port: 5001,
+        emailLogin: process.env.EMAIL_LOGIN!,
+        emailPassword: process.env.EMAIL_PASSWORD!,
+    },
     cors:{
         options:{origin:"http://localhost:3001",
             optionsSuccessStatus: 200,

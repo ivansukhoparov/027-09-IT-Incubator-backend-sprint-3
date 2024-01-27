@@ -1,14 +1,5 @@
 import dotenv from "dotenv";
-
 dotenv.config();
-
-//export const mongoUri = process.env.MONGO_URL!
-
-// localDB
-export const mongoUri = "mongodb://0.0.0.0:27017"
-export const emailLogin =process.env.EMAIL_LOGIN!
-export const emailPassword = process.env.EMAIL_PASSWORD!
-export const port: number = 5001;
 
 export const HTTP_STATUSES = {
     OK_200: 200,

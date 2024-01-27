@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import {emailLogin, emailPassword} from "../../../../utils/comon";
+import {settings} from "../../../../settings";
 
 dotenv.config();
 
@@ -11,8 +11,8 @@ export const emailFrom = {
 export const transporterOption = {
     service: "gmail",
     auth: {
-        user: emailLogin,
-        pass: emailPassword
+        user: settings.env.emailLogin,
+        pass: settings.env.emailPassword
     },
     tls: {
         // do not fail on invalid certs

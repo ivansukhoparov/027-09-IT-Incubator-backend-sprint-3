@@ -1,9 +1,9 @@
 import {MongoClient} from "mongodb";
-import {mongoUri} from "../utils/comon";
 import mongoose from "mongoose";
+import {settings} from "../settings";
 
 
-export const client = new MongoClient(mongoUri)
+export const client = new MongoClient(settings.env.mongoUri)
 
 
 
@@ -14,7 +14,7 @@ export const runDB = async () => {
         // Check connection
         await client.db("admin").command({ping: 1});
         console.log("Mongo server connection successful");
-        console.log("DB connected to " + mongoUri);
+        console.log("DB connected to " + settings.env.mongoUri);
     }catch  {
         await client.close()
         console.log("Mongo server connection failed")
