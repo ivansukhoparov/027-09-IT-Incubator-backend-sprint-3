@@ -1,53 +1,27 @@
-
 import request = require("supertest");
+import mongoose from "mongoose";
 import {app} from "../../src/app";
+import {
+    emptyBody,
+    emptyData,
+    overLengthData,
+    routerName,
+    spaceData,
+    validCreateData,
+    validUpdateData
+} from "./data-sets/post-data-set";
 
-
-
-const routerName = "/posts/";
-const emptyData = {
-    title: "",
-    shortDescription: "",
-    content: "",
-    blogId: ""
-}
-const spaceData = {
-    title: "    ",
-    shortDescription: "    ",
-    content: "    ",
-    blogId: "     "
-}
-const overLengthData = {
-    title: "over_30_aaaaaaaaaaaaaaaaaaaaaaa",
-    shortDescription: "over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__a",
-    content: "over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__over_100__a",
-    blogId: "can't be over length"
-}
-const validCreateData = {
-    title: "new title",
-    shortDescription: "a very short description",
-    content: "some content",
-    blogId: "testBlogID"
-}
-const validUpdateData = {
-    title: "update title",
-    shortDescription: "a very short new description",
-    content: "some new content",
-}
-
-const emptyBody = {
-    pagesCount: 0,
-    page: 1,
-    pageSize: 10,
-    totalCount: 0,
-    items: []
-
-}
 
 describe(routerName, () => {
+    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
     // clear DB before testing
     beforeAll(async () => {
+        await mongoose.connect(mongoURI) // Connecting to the database.
         await request(app).delete("/testing/all-data");
+    })
+
+    afterAll(async ()=>{
+        await mongoose.connection.close() // Close connection to the database
     })
 
 
