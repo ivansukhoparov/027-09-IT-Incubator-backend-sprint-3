@@ -1,4 +1,4 @@
-import {PostOutputType, PostType} from "../types/posts/output";
+import {PostOutputType, PostDtoType} from "../types/posts/output";
 import {SortPostRepositoryType} from "../types/posts/input";
 import {postCollection} from "../db/mongo/mongo-collections";
 import {postMapper} from "../types/posts/mapper";
@@ -34,7 +34,7 @@ export class PostsQueryRepository {
         else sortKey = {createdAt: sortDirection};
 
         // Get documents from DB
-        const posts: WithId<PostType>[] = await postCollection.find(searchKey).sort(sortKey).skip(+skippedDocuments).limit(+sortData.pageSize).toArray();
+        const posts: WithId<PostDtoType>[] = await postCollection.find(searchKey).sort(sortKey).skip(+skippedDocuments).limit(+sortData.pageSize).toArray();
 
         return {
             pagesCount: pageCount,
@@ -50,7 +50,7 @@ export class PostsQueryRepository {
     // return one post by id
     static async getPostById(id: string): Promise<PostOutputType | null> {
         try {
-            const post: WithId<PostType> | null = await postCollection.findOne({_id: new ObjectId(id)});
+            const post: WithId<PostDtoType> | null = await postCollection.findOne({_id: new ObjectId(id)});
             if (!post) {
                 return null;
             }

@@ -1,18 +1,26 @@
 import {BlogsRepository} from "../repositories/blogs-repository";
-import {PostType} from "../types/posts/output";
+import {PostDtoType} from "../types/posts/output";
 import {PostsRepository} from "../repositories/posts-repository";
 import {postMapper} from "../types/posts/mapper";
-import {CreatePostDto} from "../types/posts/input";
+import {PostReqBodyCreateType} from "../types/posts/input";
+import {newError} from "../utils/create-error";
 
 export class PostsService {
-    static async createNewPost(createData: CreatePostDto, id?: string,) {
-        const blogId = id || createData.blogId
+    private postRepository: PostsRepository;
+    private blogRepository: BlogsRepository;
+    constructor() {
+        this.postRepository = new PostsRepository();
+        this.blogRepository = new BlogsRepository();
+    }
+
+    async createNewPost(createData: PostReqBodyCreateType, id?: string) {
+        const blogId = id ? id : createData.blogId
         const createdAt = new Date();
-        const blog = await BlogsRepository.getBlogById(blogId)
 
-        if (!blog) return null
+        const blog = await this.blogRepository.getBlogById(blogId)
+        if (!blog) throw new Error("not_found");
 
-        const newPostData: PostType = {
+        const newPostData: PostDtoType = {
             title: createData.title,
             shortDescription: createData.shortDescription,
             content: createData.content,
@@ -21,13 +29,34 @@ export class PostsService {
             createdAt: createdAt.toISOString()
         }
 
-        const newPostId = await PostsRepository.createPost(newPostData);
+        const newPostId = await this.postRepository.createPost(newPostData);
 
-        if (!newPostId) return null
+        const newPost = await this.postRepository.getPostById(newPostId);
+        if (!newPost) throw new Error("not_found");
 
-        const newPost = await PostsRepository.getPostById(newPostId);
+        return postMapper(newPost)
+    }
 
-        if (!newPost) return null
+    async updatePost(updateData: PostReqBodyCreateType, id?: string) {
+        const blogId = id ? id : createData.blogId
+        const createdAt = new Date();
+
+        const blog = await this.blogRepository.getBlogById(blogId)
+        if (!blog) throw new Error("not_found");
+
+        const newPostData: PostDtoType = {
+            title: createData.title,
+            shortDescription: createData.shortDescription,
+            content: createData.content,
+            blogId: blogId,
+            blogName: blog.name,
+            createdAt: createdAt.toISOString()
+        }
+
+        const newPostId = await this.postRepository.createPost(newPostData);
+
+        const newPost = await this.postRepository.getPostById(newPostId);
+        if (!newPost) throw new Error("not_found");
 
         return postMapper(newPost)
     }

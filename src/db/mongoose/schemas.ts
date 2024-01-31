@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import {BlogType} from "../../types/blogs/output";
 import {CommentType} from "../../types/comments/output";
-import {PostType} from "../../types/posts/output";
+import {PostDtoType} from "../../types/posts/output";
 import {RefreshTokenPayloadType} from "../../types/refresh-token/output";
 import {UserType} from "../../types/users/output";
 import {ApiRequestType, SecuritySessionType} from "../../types/security/output";
@@ -27,7 +27,7 @@ export const blogSchema = new mongoose.Schema<BlogType>({
     isMembership: {type:Boolean, default:false}
 });
 
-export const postSchema = new mongoose.Schema<PostType>({
+export const postSchema = new mongoose.Schema<PostDtoType>({
     title: {type:String, required:true},
     shortDescription: {type:String, required:true},
     content: {type:String, required:true},

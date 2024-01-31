@@ -9,7 +9,7 @@ import {
     userSchema
 } from "./schemas";
 import {BlogType} from "../../types/blogs/output";
-import {PostType} from "../../types/posts/output";
+import {PostDtoType} from "../../types/posts/output";
 import {VideoType} from "../../types/videos/output";
 import {UserType} from "../../types/users/output";
 import {CommentType} from "../../types/comments/output";

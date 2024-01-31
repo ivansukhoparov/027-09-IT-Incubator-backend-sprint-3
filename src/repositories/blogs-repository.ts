@@ -8,13 +8,13 @@ import {BlogModel} from "../db/mongoose/models";
 export class BlogsRepository {
 
     // return all blogs from database
-    static async getAllBlogs() {
+    async getAllBlogs() {
         const blogs: WithId<BlogType>[] = await BlogModel.find({}).lean();
         return blogs.map(blogMapper)
     };
 
     // return one blog by id
-    static async getBlogById(id: string) {
+    async getBlogById(id: string) {
         try {
             return await BlogModel.findOne({_id: new ObjectId(id)});
         } catch (err) {
@@ -23,13 +23,13 @@ export class BlogsRepository {
     }
 
     // create new blog
-    static async createBlog(newBlog: BlogType) {
+    async createBlog(newBlog: BlogType) {
         const result = await BlogModel.create(newBlog)
         return result._id.toString();
     }
 
     // update existing blog
-    static async updateBlog(id: string, updateData: UpdateBlogDto) {
+    async updateBlog(id: string, updateData: UpdateBlogDto) {
 
         const result = await BlogModel.updateOne({_id: new ObjectId(id)},
             {
@@ -42,7 +42,7 @@ export class BlogsRepository {
     }
 
     //delete blog
-    static async deleteBlog(id: string) {
+    async deleteBlog(id: string) {
         try {
             const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
 

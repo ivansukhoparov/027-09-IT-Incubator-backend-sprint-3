@@ -1,4 +1,4 @@
-export type CreatePostDto = {
+export type PostReqBodyCreateType = {
     title: string
     shortDescription: string
     content: string

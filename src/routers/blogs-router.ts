@@ -20,7 +20,7 @@ import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {HTTP_STATUSES} from "../utils/comon";
 import {BlogsQueryRepository} from "../repositories/blogs-query-repository";
 import {validationPostsChainsNoBlogId} from "../middlewares/validators/posts-validators";
-import {CreatePostDto, QueryPostRequestType, SortPostRepositoryType} from "../types/posts/input";
+import {PostReqBodyCreateType, QueryPostRequestType, SortPostRepositoryType} from "../types/posts/input";
 import {PostsQueryRepository} from "../repositories/posts-query-repository";
 import {BlogsService} from "../domains/blogs-service";
 import {PostsService} from "../domains/posts-service";
@@ -97,7 +97,7 @@ blogsRouter.post("/:id/posts",
     AuthorizationMiddleware,
     validationPostsChainsNoBlogId(),
     inputValidationMiddleware,
-    async (req: RequestWithBodyAndParams<Params, CreatePostDto>, res: Response) => {
+    async (req: RequestWithBodyAndParams<Params, PostReqBodyCreateType>, res: Response) => {
 
         const blogId = req.params.id;
         const createData = req.body;

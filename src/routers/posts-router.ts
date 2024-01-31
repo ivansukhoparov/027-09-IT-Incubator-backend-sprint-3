@@ -10,7 +10,7 @@ import {
 import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {HTTP_STATUSES} from "../utils/comon";
 import {PostsRepository} from "../repositories/posts-repository";
-import {CreatePostDto, QueryPostRequestType, SortPostRepositoryType, UpdatePostDto} from "../types/posts/input";
+import {PostReqBodyCreateType, QueryPostRequestType, SortPostRepositoryType, UpdatePostDto} from "../types/posts/input";
 import {validationPostsChains} from "../middlewares/validators/posts-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {PostsQueryRepository} from "../repositories/posts-query-repository";
@@ -22,19 +22,45 @@ import {CommentsQueryRepository} from "../repositories/comments-query-repository
 
 export const postsRouter = Router();
 
-postsRouter.get("/", async (req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) => {
+export class UsersController {
+    private postService: PostsService;
 
-    const sortData: SortPostRepositoryType = {
-        sortBy: req.query.sortBy || "createdAt",
-        sortDirection: req.query.sortDirection || "desc",
-        pageNumber: req.query.pageNumber || 1,
-        pageSize: req.query.pageSize || 10
+    constructor() {
+        this.postService = new PostsService();
     }
 
-    const posts = await PostsQueryRepository.getAllPosts(sortData);
-    res.status(HTTP_STATUSES.OK_200).json(posts);
-})
 
+    async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {
+        try {
+            const sortData: SortPostRepositoryType = {
+                sortBy: req.query.sortBy || "createdAt",
+                sortDirection: req.query.sortDirection || "desc",
+                pageNumber: req.query.pageNumber || 1,
+                pageSize: req.query.pageSize || 10
+            }
+            const posts = await PostsQueryRepository.getAllPosts(sortData);
+            res.status(HTTP_STATUSES.OK_200).json(posts);
+        } catch {
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
+        }
+
+    }
+
+
+    async createPost(req: RequestWithBody<PostReqBodyCreateType>, res: Response) {
+        try {
+            const createdPost = await this.postService.createNewPost(req.body)
+            res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
+        } catch {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        }
+    }
+}
+
+const userControllerInstance = new UsersController()
+
+//GET
+postsRouter.get("/", userControllerInstance.getPost.bind(userControllerInstance));
 postsRouter.get("/:id/comments", validatePost, async (req: RequestWithSearchTermsAndParams<Params, any>, res: Response) => {
     const sortData: SortCommentsType = {
         sortBy: req.query.sortBy || "createdAt",
@@ -60,23 +86,13 @@ postsRouter.get("/:id", async (req: RequestWithParams<Params>, res: Response) =>
     }
 })
 
+// POST
 postsRouter.post('/',
     AuthorizationMiddleware,
     validationPostsChains(),
     inputValidationMiddleware,
-    async (req: RequestWithBody<CreatePostDto>, res: Response) => {
-
-    const creatData = req.body;
-    const createdPost = await PostsService.createNewPost(creatData)
-
-    if (!createdPost) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
-    }
-
-    res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
-
-})
+    userControllerInstance.createPost.bind(userControllerInstance)
+)
 
 postsRouter.post("/:id/comments",
     AuthorizationMiddleware,
@@ -98,6 +114,8 @@ postsRouter.post("/:id/comments",
     res.status(HTTP_STATUSES.CREATED_201).json(comment);
 })
 
+
+//PUT
 postsRouter.put("/:id", AuthorizationMiddleware, validationPostsChains(), inputValidationMiddleware, async (req: RequestWithBodyAndParams<Params, UpdatePostDto>, res: Response) => {
     const updateData = req.body;
     const isUpdated = await PostsRepository.updatePost(req.params.id, updateData);

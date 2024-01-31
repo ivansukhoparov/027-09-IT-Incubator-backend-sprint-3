@@ -8,7 +8,7 @@ export type PostOutputType = {
     createdAt: string
 }
 
-export type PostType = {
+export type PostDtoType = {
     title: string
     shortDescription: string
     content: string

@@ -1,7 +1,7 @@
 import request = require("supertest");
 import {app} from "../../src/app";
 import {CreateUserType} from "../../src/types/users/input";
-import {CreatePostDto} from "../../src/types/posts/input";
+import {PostReqBodyCreateType} from "../../src/types/posts/input";
 import {UserOutputType} from "../../src/types/users/output";
 import {PostOutputType} from "../../src/types/posts/output";
 import {HTTP_STATUSES} from "../../src/utils/comon";
@@ -34,7 +34,7 @@ const createTestBlogs: Array<CreateBlogDto> = [
         "websiteUrl": "http://www.test.com"
     }
 ];
-const createTestPosts: Array<CreatePostDto> = [
+const createTestPosts: Array<PostReqBodyCreateType> = [
     {
         title: "Post 1",
         shortDescription: "a very short description",
