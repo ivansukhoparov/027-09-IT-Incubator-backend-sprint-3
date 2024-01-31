@@ -15,7 +15,7 @@ postsRouter.get("/",
 
 postsRouter.get("/:id/comments",
     validatePost,
-    postsControllerInstance.getPostComments.bind.(postsControllerInstance));
+    postsControllerInstance.getPostComments.bind(postsControllerInstance));
 
 postsRouter.get("/:id",
     postsControllerInstance.getPostById.bind(postsControllerInstance));
