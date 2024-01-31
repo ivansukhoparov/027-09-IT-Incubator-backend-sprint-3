@@ -18,8 +18,10 @@ import {PostsRepository} from "../../repositories/posts-repository";
 
 export class PostsController {
     private postService: PostsService;
+    private postsQueryRepository: PostsQueryRepository;
     constructor() {
         this.postService = new PostsService();
+        this.postsQueryRepository =new PostsQueryRepository();
     }
 
     async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {
@@ -30,7 +32,7 @@ export class PostsController {
                 pageNumber: req.query.pageNumber || 1,
                 pageSize: req.query.pageSize || 10
             }
-            const posts = await PostsQueryRepository.getAllPosts(sortData);
+            const posts = await this.postsQueryRepository.getAllPosts(sortData);
             res.status(HTTP_STATUSES.OK_200).json(posts);
         } catch {
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)

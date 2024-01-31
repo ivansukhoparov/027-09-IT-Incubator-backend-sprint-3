@@ -20,8 +20,10 @@ export type QueryPostRequestType = {
 }
 
 export type SortPostRepositoryType = {
-    sortBy: string
+    sortBy: PostSortType
     sortDirection: "asc" | "desc"
     pageNumber: number
     pageSize: number
 }
+
+export type PostSortType = "title" | "shortDescription" | "content" | "blogId" | "blogName" | "createdAt"

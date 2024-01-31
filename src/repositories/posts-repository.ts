@@ -25,7 +25,7 @@ export class PostsRepository {
     }
 
     // create new post
-    async createPost(postData: PostReqBodyCreateType) {
+    async createPost(postData: PostDtoType) {
        try{
            const result = await postCollection.insertOne(postData)
            return result.insertedId.toString();
