@@ -13,7 +13,7 @@ export type UpdatePostDto = {
 }
 
 export type QueryPostRequestType = {
-    sortBy?: string
+    sortBy?: PostSortType
     sortDirection?: "asc" | "desc"
     pageNumber?: number
     pageSize?: number

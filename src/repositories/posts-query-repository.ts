@@ -11,7 +11,7 @@ export class PostsQueryRepository {
 
     // return all posts from database
     async getAllPosts(sortData: SortPostRepositoryType, blogId?: string): Promise<ViewModelType<PostOutputType>> {
-        try {
+
             let searchKey = {}
             const sortDirection = {
                 desc: -1,
@@ -41,22 +41,17 @@ export class PostsQueryRepository {
                 totalCount: documentsTotalCount,
                 items: posts.map(postMapper)
             }
-        } catch {
-            throw new Error("repository_error");
-        }
     }
 
 
     // return one post by id
     async getPostById(id: string): Promise<PostOutputType> {
-        try {
+
             const post: WithId<PostDtoType> | null = await PostModel.findOne({_id: new ObjectId(id)});
             if (!post) throw new Error("not_found");
 
             return postMapper(post);
-        } catch {
-                throw new Error("repository_error");
-        }
+
     }
 }
 

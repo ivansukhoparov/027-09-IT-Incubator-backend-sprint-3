@@ -7,7 +7,12 @@ import {
     RequestWithSearchTerms,
     RequestWithSearchTermsAndParams
 } from "../../types/common";
-import {PostReqBodyCreateType, QueryPostRequestType, SortPostRepositoryType, UpdatePostDto} from "../../types/posts/input";
+import {
+    PostReqBodyCreateType,
+    QueryPostRequestType,
+    SortPostRepositoryType,
+    UpdatePostDto
+} from "../../types/posts/input";
 import {Response} from "express";
 import {PostsQueryRepository} from "../../repositories/posts-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
@@ -41,12 +46,15 @@ export class PostsController {
     }
 
     async getPostById(req: RequestWithParams<Params>, res: Response) {
-        const post = await PostsQueryRepository.getPostById(req.params.id);
-        if (post) {
+        try {
+            const post = await this.postsQueryRepository.getPostById(req.params.id);
             res.status(HTTP_STATUSES.OK_200).json(post);
-            return
-        } else {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        } catch(err:any) {
+            if (err.message === "not_found"){
+                res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            }else {
+                res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
+            }
         }
     }
 
