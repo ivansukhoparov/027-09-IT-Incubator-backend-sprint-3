@@ -23,17 +23,11 @@ const secretKey = {
 };
 
 export class AuthService {
-    private refreshTokenRepository: RefreshTokenRepository;
-    private usersRepository: UsersRepository;
-    private securityService: SecurityService;
-    private userService: UserService;
+    constructor(protected refreshTokenRepository: RefreshTokenRepository,
+                protected usersRepository: UsersRepository,
+                protected securityService: SecurityService,
+                protected userService: UserService) {
 
-
-    constructor() {
-        this.refreshTokenRepository = new RefreshTokenRepository();
-        this.usersRepository = new UsersRepository();
-        this.securityService = new  SecurityService();
-        this.userService = new UserService();
     }
 
     async loginUser(loginOrEmail: string, password: string, deviceTitle: string, ip:string): Promise<AuthOutputType | null> {

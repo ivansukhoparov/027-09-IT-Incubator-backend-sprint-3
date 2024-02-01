@@ -1,15 +1,9 @@
 import {Tokens} from "../common/utils/tokens";
 import {SecurityRepository} from "../repositories/security-repository";
-import {throws} from "assert";
 import {SecuritySessionUpdateType} from "../types/security/output";
-import {securityCollection} from "../db/mongo/mongo-collections";
-import {SecurityQueryRepository} from "../repositories/security-query-repository";
-import {compareSync} from "bcrypt";
 
 export class SecurityService {
-    private securityRepository: SecurityRepository;
-    constructor() {
-    this.securityRepository =new SecurityRepository();
+    constructor(protected securityRepository: SecurityRepository) {
     }
 
      async createAuthSession(refreshToken: string, deviceTitle: string, ip: string): Promise<boolean> {

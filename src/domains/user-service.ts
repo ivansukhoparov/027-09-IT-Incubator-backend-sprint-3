@@ -3,15 +3,10 @@ import {UsersRepository} from "../repositories/users-repository";
 import bcrypt from "bcrypt";
 import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
-import {AuthService} from "./auth-service";
-import {UserUpdateType} from "../types/users/input";
 import {Tokens} from "../common/utils/tokens";
 
 export class UserService {
-    private usersRepository: UsersRepository;
-
-    constructor() {
-        this.usersRepository = new UsersRepository();
+    constructor(protected usersRepository: UsersRepository) {
     }
 
        async createUser(login: string, email: string, password: string, isConfirmed:boolean = false): Promise<UserOutputType | null> {

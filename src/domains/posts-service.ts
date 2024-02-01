@@ -3,14 +3,11 @@ import {PostDtoType} from "../types/posts/output";
 import {PostsRepository} from "../repositories/posts-repository";
 import {postMapper} from "../types/posts/mapper";
 import {PostReqBodyCreateType, UpdatePostDto} from "../types/posts/input";
-import {newError} from "../utils/create-error";
 
 export class PostsService {
-    private postRepository: PostsRepository;
-    private blogRepository: BlogsRepository;
-    constructor() {
-        this.postRepository = new PostsRepository();
-        this.blogRepository = new BlogsRepository();
+
+    constructor(protected postRepository: PostsRepository,
+                protected blogRepository: BlogsRepository) {
     }
 
     async createNewPost(createData: PostReqBodyCreateType, id?: string) {

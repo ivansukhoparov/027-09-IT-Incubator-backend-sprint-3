@@ -2,14 +2,11 @@ import {CommentType} from "../types/comments/output";
 import {CreateCommentDataType, UpdateCommentDto} from "../types/comments/input";
 import {CommentsRepository} from "../repositories/comments-repository";
 import {CommentsQueryRepository} from "../repositories/comments-query-repository";
-import {BlogsRepository} from "../repositories/blogs-repository";
 
 export class CommentsService{
-    private commentsRepository: CommentsRepository;
-    private commentsQueryRepository: CommentsQueryRepository;
-    constructor() {
-        this.commentsRepository = new CommentsRepository();
-        this.commentsQueryRepository = new CommentsQueryRepository();
+
+    constructor(protected commentsRepository: CommentsRepository,
+                protected commentsQueryRepository: CommentsQueryRepository) {
     }
 
      async createComment(createData: CreateCommentDataType) {

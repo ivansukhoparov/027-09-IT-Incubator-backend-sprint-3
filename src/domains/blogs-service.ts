@@ -9,10 +9,7 @@ import {UsersRepository} from "../repositories/users-repository";
 
 
 export class BlogsService {
-    private blogRepository: BlogsRepository;
-
-    constructor() {
-        this.blogRepository = new BlogsRepository();
+        constructor(protected blogRepository: BlogsRepository) {
     }
 
      async createNewBlog(createData:CreateBlogDto){
