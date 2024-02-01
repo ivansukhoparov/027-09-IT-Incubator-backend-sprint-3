@@ -3,11 +3,19 @@ import {BlogType} from "../types/blogs/output";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
+import {RefreshTokenRepository} from "../repositories/refresh-token-repository";
+import {UsersRepository} from "../repositories/users-repository";
 
 
 
 export class BlogsService {
-    static async createNewBlog(createData:CreateBlogDto){
+    private blogRepository: BlogsRepository;
+
+    constructor() {
+        this.blogRepository = new BlogsRepository();
+    }
+
+     async createNewBlog(createData:CreateBlogDto){
         const createdAt = new Date();
         const newBlogData: BlogType = {
             name: createData.name,
@@ -17,8 +25,8 @@ export class BlogsService {
             isMembership: false
         }
 
-        const blogID =  await BlogsRepository.createBlog(newBlogData)
-        const newBlog:WithId<BlogType>|null = await BlogsRepository.getBlogById(blogID);
+        const blogID =  await     this.blogRepository.createBlog(newBlogData)
+        const newBlog:WithId<BlogType>|null = await      this.blogRepository.getBlogById(blogID);
 
         if (!newBlog) return null
 
@@ -27,13 +35,13 @@ export class BlogsService {
 
 
 
-    static async updateBlog(id:string, data:UpdateBlogDto){
+     async updateBlog(id:string, data:UpdateBlogDto){
         const updateData = {
             name: data.name,
             description: data.description,
             websiteUrl: data.websiteUrl
         }
-        return await BlogsRepository.updateBlog(id,updateData);
+        return await this.blogRepository.updateBlog(id,updateData);
     }
 }
 
