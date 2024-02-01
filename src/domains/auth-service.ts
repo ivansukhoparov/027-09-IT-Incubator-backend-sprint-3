@@ -26,11 +26,14 @@ export class AuthService {
     private refreshTokenRepository: RefreshTokenRepository;
     private usersRepository: UsersRepository;
     private securityService: SecurityService;
+    private userSevice: UserService;
+
 
     constructor() {
         this.refreshTokenRepository = new RefreshTokenRepository();
         this.usersRepository = new UsersRepository();
         this.securityService = new  SecurityService();
+        this.userSevice = new UserService();
     }
 
     async loginUser(loginOrEmail: string, password: string, deviceTitle: string, ip:string): Promise<AuthOutputType | null> {
@@ -81,7 +84,7 @@ export class AuthService {
 
      async registerUser(login: string, email: string, password: string) {
 
-        await UserService.createUser(login, email, password);
+        await         this.userSevice.createUser(login, email, password);
         const createdUser = await this.usersRepository.getUserByLoginOrEmail(email);
         if (!createdUser) return false;
         const isEmailSent = await EmailAdapter.sendEmailConfirmationEmail(createdUser);
@@ -93,7 +96,7 @@ export class AuthService {
     }
      async refreshEmailConfirmationCode(email: string) {
         const newConfirmationCode = this._createConfirmationCode(email);
-        const isUserUpdated = await UserService.updateUserEmailConfirmationCode( email, newConfirmationCode);
+        const isUserUpdated = await         this.userSevice.updateUserEmailConfirmationCode( email, newConfirmationCode);
         if (!isUserUpdated) return false;
         const user = await this.usersRepository.getUserByCustomKey("email", email);
         if (!user) return false;
@@ -114,7 +117,7 @@ export class AuthService {
 
         if (receiptedCode.expirationDate < new Date().toISOString()) return false;
 
-        const isConfirmed = await UserService.updateUserEmailConfirmationStatus(user.id);
+        const isConfirmed = await         this.userSevice.updateUserEmailConfirmationStatus(user.id);
 
         return isConfirmed;
     }
