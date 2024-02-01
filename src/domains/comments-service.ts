@@ -2,10 +2,17 @@ import {CommentType} from "../types/comments/output";
 import {CreateCommentDataType, UpdateCommentDto} from "../types/comments/input";
 import {CommentsRepository} from "../repositories/comments-repository";
 import {CommentsQueryRepository} from "../repositories/comments-query-repository";
+import {BlogsRepository} from "../repositories/blogs-repository";
 
 export class CommentsService{
+    private commentsRepository: CommentsRepository;
+    private commentsQueryRepository: CommentsQueryRepository;
+    constructor() {
+        this.commentsRepository = new CommentsRepository();
+        this.commentsQueryRepository = new CommentsQueryRepository();
+    }
 
-    static async createComment(createData: CreateCommentDataType) {
+     async createComment(createData: CreateCommentDataType) {
         const createdAt = new Date();
 
         const newComment:CommentType={
@@ -18,18 +25,18 @@ export class CommentsService{
             createdAt: createdAt.toISOString()
         }
 
-        const commentId = await CommentsRepository.addNewComment(newComment);
+        const commentId = await  this.commentsRepository.addNewComment(newComment);
         if (!commentId) return null;
 
-        const createdComment = await CommentsQueryRepository.getCommentById(commentId);
+        const createdComment = await this.commentsQueryRepository.getCommentById(commentId);
         if (!createdComment) return null;
 
         return createdComment;
     }
 
 
-    static async updatePost(updateData:UpdateCommentDto, commentId:string){
+     async updatePost(updateData:UpdateCommentDto, commentId:string){
 
-        return await CommentsRepository.updateCommentById(updateData, commentId);
+        return await  this.commentsRepository.updateCommentById(updateData, commentId);
     }
 }
