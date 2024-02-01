@@ -1,68 +1,38 @@
-import {PostOutputType, PostDtoType} from "../types/posts/output";
-import {PostReqBodyCreateType, UpdatePostDto} from "../types/posts/input";
-import {postCollection} from "../db/mongo/mongo-collections";
+import {PostDtoType, PostOutputType} from "../types/posts/output";
 import {postMapper} from "../types/posts/mapper";
-import {BlogsRepository} from "./blogs-repository";
 import {ObjectId, WithId} from "mongodb";
-import {newError} from "../utils/create-error";
+import {PostModel} from "../db/mongoose/models";
+import {UpdatePostDto} from "../types/posts/input";
 
 
 export class PostsRepository {
 
     // return all posts from database
     async getAllPosts(): Promise<PostOutputType[]> {
-        const posts: WithId<PostDtoType>[] = await postCollection.find({}).toArray();
+        const posts: WithId<PostDtoType>[] = await PostModel.find({}).lean();
         return posts.map(postMapper);
     };
 
     // return one post with given id
     async getPostById(id: string) {
-        try {
-            return await postCollection.findOne({_id: new ObjectId(id)});
-        } catch (err) {
-            throw new Error("repository_error");
-        }
+        return PostModel.findOne({_id: new ObjectId(id)});
     }
 
     // create new post
     async createPost(postData: PostDtoType) {
-       try{
-           const result = await postCollection.insertOne(postData)
-           return result.insertedId.toString();
-       }catch {
-           throw new Error("repository_error");
-       }
+        return await PostModel.create(postData)
     }
 
-
-
-
     // update existing post
-    async updatePost(id: string, data: UpdatePostDto) {
-        const blog = await BlogsRepository.getBlogById(data.blogId)
-
-        const result = await postCollection.updateOne({_id: new ObjectId(id)}, {
-            $set: {
-                title: data.title,
-                shortDescription: data.shortDescription,
-                content: data.content,
-                blogId: data.blogId,
-                blogName: blog!.name
-            }
-        });
+    async updatePost(postId: string, data: UpdatePostDto) {
+        const result = await PostModel.updateOne({_id: new ObjectId(postId)}, {$set: {...data}});
         return result.matchedCount === 1;
-
     }
 
     //delete post
     async deletePost(id: string) {
-        try {
-            const result = await postCollection.deleteOne({_id: new ObjectId(id)});
+        const result = await PostModel.deleteOne({_id: new ObjectId(id)});
             return result.deletedCount === 1;
-        } catch (err) {
-            return false
-        }
-
     }
 }
 

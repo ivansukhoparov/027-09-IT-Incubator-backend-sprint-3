@@ -98,18 +98,16 @@ export class PostsController {
     }
 
     async updatePost(req: RequestWithBodyAndParams<Params, UpdatePostDto>, res: Response) {
-        const updateData = req.body;
-        const isUpdated = await PostsRepository.updatePost(req.params.id, updateData);
-        if (isUpdated) {
-            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-            return
+        try {
+            const isUpdated = await this.postService.updatePost(req.body, req.params.id);
+        }catch {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         }
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
 
-    async deletePost(req: RequestWithParams<Params>, res: Response) {
-        const isDeleted = await PostsRepository.deletePost(req.params.id);
-        if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-        else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    }
+    // async deletePost(req: RequestWithParams<Params>, res: Response) {
+    //     const isDeleted = await PostsRepository.deletePost(req.params.id);
+    //     if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    //     else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+    // }
 }
