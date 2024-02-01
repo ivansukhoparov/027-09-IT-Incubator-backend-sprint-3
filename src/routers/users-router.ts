@@ -8,7 +8,7 @@ import {
 } from "../types/users/input";
 import {UsersQueryRepository} from "../repositories/users-query-repository";
 import {UserOutputType} from "../types/users/output";
-import {UsersDomain} from "../domains/users-domain";
+import {UserService} from "../domains/user-service";
 import {HTTP_STATUSES} from "../utils/comon";
 import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {usersValidationChain} from "../middlewares/validators/users-validators";
@@ -38,7 +38,7 @@ usersRouter.get("/", async (req: RequestWithSearchTerms<QueryUsersRequestType>, 
 
 usersRouter.post("/", AuthorizationMiddleware, usersValidationChain(),inputValidationMiddleware,  async (req:RequestWithBody<CreateUserType>, res:Response)=>{
 
-    const createdUser: UserOutputType | null = await UsersDomain.createUser(req.body.login, req.body.email, req.body.password, true);
+    const createdUser: UserOutputType | null = await UserService.createUser(req.body.login, req.body.email, req.body.password, true);
     if (!createdUser) {
         res.status(HTTP_STATUSES.BAD_REQUEST_400);
         return

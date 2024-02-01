@@ -6,8 +6,16 @@ import {ObjectId} from "mongodb";
 import {AuthService} from "./auth-service";
 import {UserUpdateType} from "../types/users/input";
 
-export class UsersDomain {
-    static async createUser(login: string, email: string, password: string, isConfirmed:boolean = false): Promise<UserOutputType | null> {
+export class UserService {
+    private authService: AuthService;
+    private usersRepository: UsersRepository;
+
+    constructor() {
+        this.authService = new AuthService();
+        this.usersRepository = new UsersRepository();
+    }
+
+       async createUser(login: string, email: string, password: string, isConfirmed:boolean = false): Promise<UserOutputType | null> {
         const createdAt = new Date().toISOString();
         const hash = await bcrypt.hash(password, 10);
 
@@ -17,21 +25,21 @@ export class UsersDomain {
             hash: hash,
             createdAt: createdAt,
             emailConfirmation: {
-                confirmationCode: AuthService._createConfirmationCode(email),
+                confirmationCode: this.authService._createConfirmationCode(email),
                 isConfirmed: isConfirmed
             }
         }
 
-        const newUserId = await UsersRepository.createUser(newUser);
+        const newUserId = await this.usersRepository .createUser(newUser);
         if (!newUserId) return null;
 
-        const createdUser = await UsersRepository.getUserById(newUserId);
+        const createdUser = await this.usersRepository .getUserById(newUserId);
         if (!createdUser) return null;
 
         return createdUser;
     }
 
-    static async updateUserEmailConfirmationStatus (userId:string){
+       async updateUserEmailConfirmationStatus (userId:string){
        try {
             const isUpdated = await usersCollection.updateOne({_id: new ObjectId(userId)}, {$set: {"emailConfirmation.isConfirmed": true}});
             return isUpdated.matchedCount===1;
@@ -40,7 +48,7 @@ export class UsersDomain {
        }
     }
 
-    static async updateUserEmailConfirmationCode (email:string, code:string){
+       async updateUserEmailConfirmationCode (email:string, code:string){
         try {
             const isUpdated = await usersCollection.updateOne(
                 {email: email},

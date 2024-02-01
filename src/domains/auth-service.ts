@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import {AuthOutputType} from "../types/auth/otput";
-import {UsersDomain} from "./users-domain";
+import {UserService} from "./user-service";
 import {EmailAdapter} from "../common/utils/adapters/email/email-adapter";
 import {add} from "date-fns/add";
 import {btoa} from "buffer";
@@ -25,10 +25,12 @@ const secretKey = {
 export class AuthService {
     private refreshTokenRepository: RefreshTokenRepository;
     private usersRepository: UsersRepository;
+    private securityService: SecurityService;
 
     constructor() {
         this.refreshTokenRepository = new RefreshTokenRepository();
         this.usersRepository = new UsersRepository();
+        this.securityService = new  SecurityService();
     }
 
     async loginUser(loginOrEmail: string, password: string, deviceTitle: string, ip:string): Promise<AuthOutputType | null> {
@@ -43,7 +45,7 @@ export class AuthService {
 
         const tokens = this._getTokens(user.id, deviceId);
 
-        const sessionIsCreate = await SecurityService.createAuthSession(tokens.refreshToken,deviceTitle,ip);
+        const sessionIsCreate = await this.securityService.createAuthSession(tokens.refreshToken,deviceTitle,ip);
         if (!sessionIsCreate) return null;
         return tokens;
     }
@@ -63,7 +65,7 @@ export class AuthService {
         if (!decodedToken) return null;
 
         const tokens = this._getTokens(decodedToken.userId, decodedToken.deviceId);
-        const isSessionUpdate = await SecurityService.updateAuthSession(tokens.refreshToken);
+        const isSessionUpdate = await this.securityService.updateAuthSession(tokens.refreshToken);
         if (!isSessionUpdate) return null;
 
         return tokens;
@@ -79,7 +81,7 @@ export class AuthService {
 
      async registerUser(login: string, email: string, password: string) {
 
-        await UsersDomain.createUser(login, email, password);
+        await UserService.createUser(login, email, password);
         const createdUser = await this.usersRepository.getUserByLoginOrEmail(email);
         if (!createdUser) return false;
         const isEmailSent = await EmailAdapter.sendEmailConfirmationEmail(createdUser);
@@ -91,7 +93,7 @@ export class AuthService {
     }
      async refreshEmailConfirmationCode(email: string) {
         const newConfirmationCode = this._createConfirmationCode(email);
-        const isUserUpdated = await UsersDomain.updateUserEmailConfirmationCode( email, newConfirmationCode);
+        const isUserUpdated = await UserService.updateUserEmailConfirmationCode( email, newConfirmationCode);
         if (!isUserUpdated) return false;
         const user = await this.usersRepository.getUserByCustomKey("email", email);
         if (!user) return false;
@@ -112,7 +114,7 @@ export class AuthService {
 
         if (receiptedCode.expirationDate < new Date().toISOString()) return false;
 
-        const isConfirmed = await UsersDomain.updateUserEmailConfirmationStatus(user.id);
+        const isConfirmed = await UserService.updateUserEmailConfirmationStatus(user.id);
 
         return isConfirmed;
     }
