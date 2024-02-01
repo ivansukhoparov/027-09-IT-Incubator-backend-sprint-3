@@ -11,7 +11,9 @@ dotenv.config();
 const login = process.env.SUPERADMIN_LOGIN!;
 const password = process.env.SUPERADMIN_PASSWORD!;
 
-
+const authService = new AuthService();
+const usersRepository = new UsersRepository();
+const commentsQueryRepository = new CommentsQueryRepository();
 // basic
 export const AuthorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -34,14 +36,14 @@ export const AuthorizationMiddleware = async (req: Request, res: Response, next:
 
         } else if (authMethod === AUTH_METHODS.bearer) { // If authorisation method is BEARER
 
-            const userId = await AuthService.getUserIdByToken(authInput);
+            const userId = await authService.getUserIdByToken(authInput);
 
             if (!userId) {
                 res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
                 return;
             }
 
-            const user = await UsersRepository.getUserById(userId);
+            const user = await usersRepository.getUserById(userId);
 
             if (!user) {
                 res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
@@ -61,7 +63,7 @@ export const AuthorizationMiddleware = async (req: Request, res: Response, next:
 
 export const accessRight = async (req:Request, res:Response, next: NextFunction)=>{
 
-    const comment = await CommentsQueryRepository.getCommentById(req.params.id)
+    const comment = await commentsQueryRepository.getCommentById(req.params.id)
     if (!comment){
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         return;

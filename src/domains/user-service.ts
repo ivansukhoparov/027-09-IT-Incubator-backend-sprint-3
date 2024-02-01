@@ -5,13 +5,12 @@ import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {AuthService} from "./auth-service";
 import {UserUpdateType} from "../types/users/input";
+import {Tokens} from "../common/utils/tokens";
 
 export class UserService {
-    private authService: AuthService;
     private usersRepository: UsersRepository;
 
     constructor() {
-        this.authService = new AuthService();
         this.usersRepository = new UsersRepository();
     }
 
@@ -25,7 +24,7 @@ export class UserService {
             hash: hash,
             createdAt: createdAt,
             emailConfirmation: {
-                confirmationCode: this.authService._createConfirmationCode(email),
+                confirmationCode: Tokens.createEmailConfirmationCode(email),
                 isConfirmed: isConfirmed
             }
         }

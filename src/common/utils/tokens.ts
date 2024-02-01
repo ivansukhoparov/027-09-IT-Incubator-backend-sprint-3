@@ -3,16 +3,20 @@ import {settings} from "../../settings";
 import {RefreshTokenRepository} from "../../repositories/refresh-token-repository";
 import {RefreshTokenPayloadType} from "../../types/refresh-token/output";
 import {AccessTokenPayloadType} from "../../types/access-token/output";
+import {add} from "date-fns/add";
+import {btoa} from "buffer";
+import {v4 as uuidv4} from "uuid";
 
 
 const secretKeyRefreshToken = process.env.REFRESH_TOKEN_SECRET_KEY!;
 const secretKeyAccessToken = process.env.ACCESS_TOKEN_SECRET_KEY!;
 const secretKeyRecoveryToken = process.env.PASS_RECOVERY_TOKEN_SECRET_KEY!;
 
+const refreshTokenRepository = new RefreshTokenRepository();
+
 export class Tokens {
 
     // Refresh token
-
     static createRefreshToken = (userId: string, deviceId: string,
                                  expiresIn: string = settings.refreshToken.expiredIn,
                                  secretKey: string = secretKeyRefreshToken) => {
@@ -21,7 +25,7 @@ export class Tokens {
     };
     static verifyRefreshToken = async (token: string,
                                        secretKey: string = secretKeyRefreshToken) => {
-        const isInBlackList = await RefreshTokenRepository.checkToken(token);
+        const isInBlackList = await refreshTokenRepository.checkToken(token);
         if (isInBlackList) {
             return false;
         }
@@ -41,9 +45,10 @@ export class Tokens {
         }
     }
 
-    // Access token
 
-    static createAccessToken = (userId: string,
+
+    // Access token
+        static createAccessToken = (userId: string,
                                 expiresIn: string = settings.accessToken.expiredIn,
                                 secretKey: string = secretKeyAccessToken) => {
 
@@ -67,8 +72,12 @@ export class Tokens {
         }
     }
 
-    // Password recovery token
+    static createEmailConfirmationCode(email: string, lifeTime: {} = {hours: 48}) {
+        const confirmationCodeExpiration = add(new Date, lifeTime).toISOString()
+        return `${btoa(uuidv4())}:${btoa(email)}:${btoa(confirmationCodeExpiration)}`
+    }
 
+    // Password recovery token
     static createPasswordRecoveryToken = (userId: string,
                                           expiresIn: string = settings.accessToken.expiredIn,
                                           secretKey: string = secretKeyRecoveryToken) => {

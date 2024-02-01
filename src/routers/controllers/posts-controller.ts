@@ -24,9 +24,15 @@ import {PostsRepository} from "../../repositories/posts-repository";
 export class PostsController {
     private postService: PostsService;
     private postsQueryRepository: PostsQueryRepository;
+    private postsRepository: PostsRepository;
+    private commentsService: CommentsService;
+    private commentsQueryRepository: CommentsQueryRepository;
     constructor() {
         this.postService = new PostsService();
+        this.commentsService = new CommentsService();
+        this.postsRepository = new PostsRepository();
         this.postsQueryRepository =new PostsQueryRepository();
+        this.commentsQueryRepository = new CommentsQueryRepository();
     }
 
     async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {
@@ -65,7 +71,7 @@ export class PostsController {
             pageNumber: +req.query.pageNumber || 1,
             pageSize: +req.query.pageSize || 10
         }
-        const comments = await CommentsQueryRepository.getAllCommentsByPostId(sortData, req.params.id);
+        const comments = await this.commentsQueryRepository.getAllCommentsByPostId(sortData, req.params.id);
         if (!comments) {
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
             return;
@@ -89,7 +95,7 @@ export class PostsController {
             userLogin: req.user.login,
             postId: req.params.id
         };
-        const comment = await CommentsService.createComment(createCommentData);
+        const comment = await this.commentsService.createComment(createCommentData);
         if (!comment) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
             return;
@@ -106,7 +112,7 @@ export class PostsController {
     }
 
     async deletePost(req: RequestWithParams<Params>, res: Response) {
-        const isDeleted = await PostsRepository.deletePost(req.params.id);
+        const isDeleted = await this.postsRepository.deletePost(req.params.id);
         if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }

@@ -26,14 +26,14 @@ export class AuthService {
     private refreshTokenRepository: RefreshTokenRepository;
     private usersRepository: UsersRepository;
     private securityService: SecurityService;
-    private userSevice: UserService;
+    private userService: UserService;
 
 
     constructor() {
         this.refreshTokenRepository = new RefreshTokenRepository();
         this.usersRepository = new UsersRepository();
         this.securityService = new  SecurityService();
-        this.userSevice = new UserService();
+        this.userService = new UserService();
     }
 
     async loginUser(loginOrEmail: string, password: string, deviceTitle: string, ip:string): Promise<AuthOutputType | null> {
@@ -84,7 +84,7 @@ export class AuthService {
 
      async registerUser(login: string, email: string, password: string) {
 
-        await         this.userSevice.createUser(login, email, password);
+         await this.userService.createUser(login, email, password);
         const createdUser = await this.usersRepository.getUserByLoginOrEmail(email);
         if (!createdUser) return false;
         const isEmailSent = await EmailAdapter.sendEmailConfirmationEmail(createdUser);
@@ -95,8 +95,8 @@ export class AuthService {
         return true;
     }
      async refreshEmailConfirmationCode(email: string) {
-        const newConfirmationCode = this._createConfirmationCode(email);
-        const isUserUpdated = await         this.userSevice.updateUserEmailConfirmationCode( email, newConfirmationCode);
+        const newConfirmationCode = Tokens.createEmailConfirmationCode(email);
+         const isUserUpdated = await this.userService.updateUserEmailConfirmationCode(email, newConfirmationCode);
         if (!isUserUpdated) return false;
         const user = await this.usersRepository.getUserByCustomKey("email", email);
         if (!user) return false;
@@ -117,7 +117,7 @@ export class AuthService {
 
         if (receiptedCode.expirationDate < new Date().toISOString()) return false;
 
-        const isConfirmed = await         this.userSevice.updateUserEmailConfirmationStatus(user.id);
+         const isConfirmed = await this.userService.updateUserEmailConfirmationStatus(user.id);
 
         return isConfirmed;
     }
@@ -161,10 +161,7 @@ export class AuthService {
             return null
         }
     }
-     _createConfirmationCode(email: string, lifeTime: {} = {hours: 48}) {
-        const confirmationCodeExpiration = add(new Date, lifeTime).toISOString()
-        return `${btoa(uuidv4())}:${btoa(email)}:${btoa(confirmationCodeExpiration)}`
-    }
+
 
      _createRecoveryCode(userId: string) {
         return Tokens.createPasswordRecoveryToken(userId)
