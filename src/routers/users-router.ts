@@ -17,6 +17,10 @@ import {UsersRepository} from "../repositories/users-repository";
 
 export const usersRouter = Router();
 
+const userService = new UserService();
+const usersQueryRepository = new UsersQueryRepository();
+const usersRepository = new UsersRepository();
+
 usersRouter.get("/", async (req: RequestWithSearchTerms<QueryUsersRequestType>, res: Response) => {
     const query: QueryUsersRequestType = req.query;
 
@@ -31,14 +35,14 @@ usersRouter.get("/", async (req: RequestWithSearchTerms<QueryUsersRequestType>, 
         searchEmailTerm: query.searchEmailTerm || null
     }
 
-    const users = await UsersQueryRepository.getAllUsers(sortData, searchData);
+    const users = await usersQueryRepository.getAllUsers(sortData, searchData);
 
     res.json(users)
 })
 
 usersRouter.post("/", AuthorizationMiddleware, usersValidationChain(),inputValidationMiddleware,  async (req:RequestWithBody<CreateUserType>, res:Response)=>{
 
-    const createdUser: UserOutputType | null = await UserService.createUser(req.body.login, req.body.email, req.body.password, true);
+    const createdUser: UserOutputType | null = await userService.createUser(req.body.login, req.body.email, req.body.password, true);
     if (!createdUser) {
         res.status(HTTP_STATUSES.BAD_REQUEST_400);
         return
@@ -47,7 +51,7 @@ usersRouter.post("/", AuthorizationMiddleware, usersValidationChain(),inputValid
 })
 
 usersRouter.delete("/:id",AuthorizationMiddleware, async (req: RequestWithParams<Params>, res: Response) => {
-    const isDeleted = await UsersRepository.deleteUser(req.params.id);
+    const isDeleted = await  usersRepository.deleteUser(req.params.id);
     if (!isDeleted) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     else res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
