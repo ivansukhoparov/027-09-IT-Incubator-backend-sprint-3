@@ -105,9 +105,9 @@ export class PostsController {
         }
     }
 
-    // async deletePost(req: RequestWithParams<Params>, res: Response) {
-    //     const isDeleted = await PostsRepository.deletePost(req.params.id);
-    //     if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-    //     else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    // }
+    async deletePost(req: RequestWithParams<Params>, res: Response) {
+        const isDeleted = await PostsRepository.deletePost(req.params.id);
+        if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+    }
 }
