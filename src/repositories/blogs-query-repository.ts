@@ -1,4 +1,4 @@
-import {BlogType, BlogOutputType} from "../types/blogs/output";
+import {BlogOutputType, BlogType} from "../types/blogs/output";
 import {SearchBlogRepositoryType, SortBlogRepositoryType,} from "../types/blogs/input";
 import {ObjectId, WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
@@ -8,7 +8,7 @@ import {BlogModel} from "../db/mongoose/models";
 
 export class BlogsQueryRepository {
 
-    static async getAllBlogs(sortData: SortBlogRepositoryType, searchData: SearchBlogRepositoryType): Promise<ViewModelType<BlogOutputType>> {
+    async getAllBlogs(sortData: SortBlogRepositoryType, searchData: SearchBlogRepositoryType): Promise<ViewModelType<BlogOutputType>> {
         let searchKey = {};
     //    let sortKey = {};
     //    let sortDirection: number;
@@ -49,7 +49,7 @@ export class BlogsQueryRepository {
         }
     }
 
-    static async getBlogById(id: string): Promise<BlogOutputType | null> {
+    async getBlogById(id: string): Promise<BlogOutputType | null> {
         try {
             const blog: WithId<BlogType> | null = await BlogModel.findOne({_id: new ObjectId(id)});
             if (!blog) {
@@ -60,8 +60,6 @@ export class BlogsQueryRepository {
             return null;
         }
     }
-
-
 }
 
 

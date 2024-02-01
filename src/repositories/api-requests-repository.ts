@@ -1,16 +1,15 @@
 import {apiRequestsCollection} from "../db/mongo/mongo-collections";
 
 export class ApiRequestsRepository {
-    static async writeRequest(ip: string, url: string) {
+    async writeRequest(ip: string, url: string) {
         const result = await apiRequestsCollection.insertOne({
             ip: ip,
             url: url,
             date: new Date()
         })
-
     }
 
-    static async countRequestByTime(ip: string, url: string, interval: number) {
+    async countRequestByTime(ip: string, url: string, interval: number) {
 
         const timeCheck = (new Date(Date.now() - (1000 * interval)));
 
@@ -21,7 +20,6 @@ export class ApiRequestsRepository {
                 {date: {$gte: timeCheck}}
             ]
         };
-
         return await apiRequestsCollection.countDocuments(searchKey);
     }
 }

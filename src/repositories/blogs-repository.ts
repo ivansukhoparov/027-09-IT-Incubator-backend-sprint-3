@@ -2,7 +2,6 @@ import {BlogType} from "../types/blogs/output";
 import {UpdateBlogDto} from "../types/blogs/input";
 import {ObjectId, WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
-import {blogCollection} from "../db/mongo/mongo-collections";
 import {BlogModel} from "../db/mongoose/models";
 
 export class BlogsRepository {
@@ -36,8 +35,7 @@ export class BlogsRepository {
                 $set:
                 updateData
             }
-        );
-
+        )
         return result.matchedCount === 1;
     }
 
@@ -50,7 +48,6 @@ export class BlogsRepository {
         } catch (err) {
             return false;
         }
-
     }
 }
 

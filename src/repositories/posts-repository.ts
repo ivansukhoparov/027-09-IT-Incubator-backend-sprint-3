@@ -11,7 +11,7 @@ export class PostsRepository {
     async getAllPosts(): Promise<PostOutputType[]> {
         const posts: WithId<PostDtoType>[] = await PostModel.find({}).lean();
         return posts.map(postMapper);
-    };
+    }
 
     // return one post with given id
     async getPostById(id: string) {

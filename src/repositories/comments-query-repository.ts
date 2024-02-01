@@ -6,7 +6,7 @@ import {OutputCommentType} from "../types/comments/output";
 import {ViewModelType} from "../types/view-model";
 
 export class CommentsQueryRepository {
-    static async getAllCommentsByPostId(sortData: SortCommentsType, postId: string,): Promise<ViewModelType<OutputCommentType> | null> {
+    async getAllCommentsByPostId(sortData: SortCommentsType, postId: string,): Promise<ViewModelType<OutputCommentType> | null> {
         try {
             const commentsCount = await commentsCollection.countDocuments({postId: postId});
             const pagesCount = Math.ceil(commentsCount / sortData.pageSize);
@@ -30,7 +30,7 @@ export class CommentsQueryRepository {
         }
     }
 
-    static async getCommentById(commentId: string) {
+    async getCommentById(commentId: string) {
         try {
             const comment = await commentsCollection.findOne({_id: new ObjectId(commentId)});
             if (comment) return commentMapper(comment);

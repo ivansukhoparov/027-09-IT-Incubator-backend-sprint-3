@@ -1,15 +1,14 @@
-import {SecurityDevicesOutput, SecuritySessionType, SecuritySessionUpdateType} from "../types/security/output";
+import {SecuritySessionType, SecuritySessionUpdateType} from "../types/security/output";
 import {securityCollection} from "../db/mongo/mongo-collections";
-import {securityMapper} from "../types/security/mapper";
 
 
 export class SecurityRepository {
-    static async createNewSession(sessionData: SecuritySessionType) {
+    async createNewSession(sessionData: SecuritySessionType) {
         const isCreated = await securityCollection.insertOne(sessionData);
         return isCreated.insertedId.toString()
     }
 
-    static async updateSession(deviceId: string, updateData: SecuritySessionUpdateType) {
+    async updateSession(deviceId: string, updateData: SecuritySessionUpdateType) {
         const isUpdated = await securityCollection.updateOne({deviceId: deviceId},
             {
                 $set: {
@@ -21,18 +20,17 @@ export class SecurityRepository {
         return !!isUpdated.matchedCount
     }
 
-    static async deleteSession(deviceId: string) {
+    async deleteSession(deviceId: string) {
         const isDeleted = await securityCollection.deleteOne({deviceId: deviceId})
         return !!isDeleted.deletedCount
     }
 
-    static async getSessionByDeviceId(deviceId: string) {
+    async getSessionByDeviceId(deviceId: string) {
         return await securityCollection.findOne({deviceId:deviceId});
     }
 
-static async deleteSessionsExpectCurrent(userId:string,deviceId:string){
+    async deleteSessionsExpectCurrent(userId: string, deviceId: string) {
         const isDeleted = await securityCollection.deleteMany({$and:[{userId: userId},{deviceId: {$not: {$eq:deviceId}}}]})
     return isDeleted.deletedCount!==0
 }
-
 }

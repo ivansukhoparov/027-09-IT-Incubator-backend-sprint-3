@@ -6,7 +6,7 @@ import {userMapper, userMapperAuth} from "../types/users/mapper";
 
 export class UsersRepository {
 
-    static async getUserById(id: string): Promise<UserOutputType | null> {
+    async getUserById(id: string): Promise<UserOutputType | null> {
         try {
             const user = await usersCollection.findOne({_id: new ObjectId(id)});
             if (!user) return null;
@@ -16,7 +16,7 @@ export class UsersRepository {
         }
     }
 
-    static async getUserByLoginOrEmail(loginOrEmail: string) {
+    async getUserByLoginOrEmail(loginOrEmail: string) {
         try {
             const searchKey = {$or: [{login: loginOrEmail}, {email: loginOrEmail}]};
             const user = await usersCollection.findOne(searchKey);
@@ -29,7 +29,7 @@ export class UsersRepository {
         }
     }
 
-    static async getUserByCustomKey(filterKey: string, filterValue: string) {
+    async getUserByCustomKey(filterKey: string, filterValue: string) {
         try {
             let filter = {};
             if (filterKey === "id") filter = {_id: new ObjectId(filterValue)};
@@ -43,9 +43,7 @@ export class UsersRepository {
         }
     }
 
-
-
-    static async updateUserCustomFields(filterKey: string, filterValue: string, updateData: UserType) {
+    async updateUserCustomFields(filterKey: string, filterValue: string, updateData: UserType) {
         try {
             let filter = {};
             if (filterKey === "id") filter = {_id: new ObjectId(filterValue)};
@@ -58,7 +56,7 @@ export class UsersRepository {
         }
     }
 
-    static async updateUserPasswordHash (userId:string,newHash:string){
+    async updateUserPasswordHash(userId: string, newHash: string) {
         try{
             const isUpdated = await usersCollection.updateOne(
                 {_id:new ObjectId(userId)},
@@ -69,7 +67,7 @@ export class UsersRepository {
         }
     }
 
-    static async createUser(createData: UserType): Promise<string | null> {
+    async createUser(createData: UserType): Promise<string | null> {
         try {
             const result = await usersCollection.insertOne(createData);
             return result.insertedId.toString();
@@ -78,7 +76,7 @@ export class UsersRepository {
         }
     }
 
-    static async deleteUser(id: string) {
+    async deleteUser(id: string) {
         try {
             const result = await usersCollection.deleteOne({_id: new ObjectId(id)});
             return result.deletedCount === 1;

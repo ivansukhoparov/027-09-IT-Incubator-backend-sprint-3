@@ -7,7 +7,7 @@ import {userMapper} from "../types/users/mapper";
 
 export class UsersQueryRepository {
 
-    static async getAllUsers(sortData: SortUsersRepositoryType, searchData: SearchUsersRepositoryType) {
+    async getAllUsers(sortData: SortUsersRepositoryType, searchData: SearchUsersRepositoryType) {
 
         let sortKey = {};
         let searchKey = {};

@@ -5,12 +5,12 @@ import {VideoType} from "../types/videos/output";
 
 
 export class VideosRepository {
-    static async getAllVideos() {
+    async getAllVideos() {
         const videos = await videosCollection.find({}).toArray();
         return videos.map(videosMapper);
     }
 
-    static async getVideoById(id: number): Promise<VideoType | null> {
+    async getVideoById(id: number): Promise<VideoType | null> {
         const video = await videosCollection.findOne({id: id});
         if (!video) {
             return null
@@ -18,7 +18,7 @@ export class VideosRepository {
         return videosMapper(video);
     }
 
-    static async createVideo(data: CreateVideoDto) {
+    async createVideo(data: CreateVideoDto) {
 
         const createdAt = new Date();
         const publicationDate = new Date();
@@ -44,7 +44,7 @@ export class VideosRepository {
         }
     }
 
-    static async updateVideo(id: number, data: UpdateVideoDto) {
+    async updateVideo(id: number, data: UpdateVideoDto) {
         const result = await videosCollection.updateOne({id: id}, {
             $set: {
                 title: data.title,
@@ -59,7 +59,8 @@ export class VideosRepository {
         return result.matchedCount === 1;
     }
 
-    static async deleteVideo(id: number) {
+
+    async deleteVideo(id: number) {
         const result = await videosCollection.deleteOne({id: id});
         return result.deletedCount === 1;
     }
