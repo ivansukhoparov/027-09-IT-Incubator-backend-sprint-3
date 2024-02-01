@@ -4,51 +4,14 @@ import {SecurityQueryRepository} from "../repositories/security-query-repository
 import {Tokens} from "../common/utils/tokens";
 import {Params, RequestWithParams} from "../types/common";
 import {SecurityService} from "../domains/security-service";
+import {SecurityController} from "./controllers/security-controller";
 
 export const securityRouter = Router()
 
-securityRouter.get("/devices", async (req: Request, res: Response) => {
-    const refreshToken = req.cookies.refreshToken;
-    const isValid = await  Tokens.verifyRefreshToken(refreshToken);
-    if (!isValid) {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
-        return;
-    }
-    const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+const securityControllerInstance = new SecurityController();
 
-    const sessions = await SecurityQueryRepository.getSessionByUserId(decodedToken!.userId)
-    res.status(HTTP_STATUSES.OK_200).json(sessions);
-})
+securityRouter.get("/devices", securityControllerInstance.getDevices.bind(securityControllerInstance))
 
-securityRouter.delete("/devices/:id", async (req: RequestWithParams<Params>, res: Response) => {
-    const refreshToken = req.cookies.refreshToken;
-    const isValid = await Tokens.verifyRefreshToken(refreshToken);
-    if (!isValid) {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
-        return;
-    }
-    const isSession = await SecurityQueryRepository.getSessionByDeviceId(req.params.id)
-    if (!isSession) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return;
-    }
-    const isDeleted = await SecurityService.terminateAuthSession(refreshToken, req.params.id)
-    if (!isDeleted) {
-        res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
-        return;
-    }
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-})
+securityRouter.delete("/devices/:id", securityControllerInstance.terminateDevice.bind(securityControllerInstance))
 
-securityRouter.delete("/devices", async (req: RequestWithParams<Params>, res: Response) => {
-    const refreshToken = req.cookies.refreshToken;
-    const isValid = await Tokens.verifyRefreshToken(refreshToken);
-    if (!isValid) {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
-        return;
-    }
-
-    await SecurityService.terminateOtherAuthSessions(refreshToken)
-
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-})
+securityRouter.delete("/devices", securityControllerInstance.terminateAllDevices.bind(securityControllerInstance))
