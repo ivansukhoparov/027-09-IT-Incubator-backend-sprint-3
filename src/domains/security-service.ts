@@ -7,7 +7,12 @@ import {SecurityQueryRepository} from "../repositories/security-query-repository
 import {compareSync} from "bcrypt";
 
 export class SecurityService {
-    static async createAuthSession(refreshToken: string, deviceTitle: string, ip: string): Promise<boolean> {
+    private securityRepository: SecurityRepository;
+    constructor() {
+    this.securityRepository =new SecurityRepository();
+    }
+
+     async createAuthSession(refreshToken: string, deviceTitle: string, ip: string): Promise<boolean> {
 
         const decodedToken = Tokens.decodeRefreshToken(refreshToken);
         if (!decodedToken) return false
@@ -24,11 +29,11 @@ export class SecurityService {
             }
         }
 
-        await SecurityRepository.createNewSession(newSession);
+        await this.securityRepository.createNewSession(newSession);
         return true
     }
 
-    static async updateAuthSession(refreshToken: string): Promise<boolean> {
+      async updateAuthSession(refreshToken: string): Promise<boolean> {
 
         const decodedToken = Tokens.decodeRefreshToken(refreshToken);
         if (!decodedToken) return false
@@ -41,29 +46,29 @@ export class SecurityService {
             }
         }
 
-        return SecurityRepository.updateSession(decodedToken.deviceId, updateData);
+        return this.securityRepository.updateSession(decodedToken.deviceId, updateData);
     }
 
-    static async terminateAuthSession(refreshToken:string, deviceId: string){
+      async terminateAuthSession(refreshToken:string, deviceId: string){
         const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        const session = await SecurityRepository.getSessionByDeviceId(deviceId);
+        const session = await this.securityRepository.getSessionByDeviceId(deviceId);
         if (decodedToken?.userId!==session?.userId){
             return false;
         }
-        return  SecurityRepository.deleteSession(deviceId);
+        return  this.securityRepository.deleteSession(deviceId);
     }
 
-    static async terminateCurrentSession(refreshToken:string){
+      async terminateCurrentSession(refreshToken:string){
         const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        const session = await SecurityRepository.getSessionByDeviceId(decodedToken!.deviceId);
+        const session = await this.securityRepository.getSessionByDeviceId(decodedToken!.deviceId);
         if (decodedToken?.userId!==session?.userId){
             return false;
         }
-        return  SecurityRepository.deleteSession(decodedToken!.deviceId);
+        return  this.securityRepository.deleteSession(decodedToken!.deviceId);
     }
 
-    static async terminateOtherAuthSessions(refreshToken:string){
+      async terminateOtherAuthSessions(refreshToken:string){
         const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        return await SecurityRepository.deleteSessionsExpectCurrent(decodedToken!.userId,decodedToken!.deviceId)
+        return await this.securityRepository.deleteSessionsExpectCurrent(decodedToken!.userId,decodedToken!.deviceId)
     }
 }
