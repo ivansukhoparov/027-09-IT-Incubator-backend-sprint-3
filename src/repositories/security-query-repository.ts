@@ -1,8 +1,9 @@
 import {SecurityDevicesOutput} from "../types/security/output";
 import {securityCollection} from "../db/mongo/mongo-collections";
 import {securityMapper} from "../types/security/mapper";
+import {injectable} from "inversify";
 
-
+@injectable()
 export class SecurityQueryRepository {
      async getSessionByUserId(userId: string): Promise<SecurityDevicesOutput[]> {
         const sessions =  await securityCollection.find({userId:userId}).toArray();

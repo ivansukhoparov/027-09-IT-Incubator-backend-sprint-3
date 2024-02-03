@@ -20,19 +20,16 @@ import {CreateCommentDataType, CreateCommentDto, SortCommentsType} from "../../t
 import {CommentsQueryRepository} from "../../repositories/comments-query-repository";
 import {CommentsService} from "../../domains/comments-service";
 import {PostsRepository} from "../../repositories/posts-repository";
+import {inject, injectable} from "inversify";
+import {CommentsRepository} from "../../repositories/comments-repository";
 
+@injectable()
 export class PostsController {
-    private postService: PostsService;
-    private postsQueryRepository: PostsQueryRepository;
-    private postsRepository: PostsRepository;
-    private commentsService: CommentsService;
-    private commentsQueryRepository: CommentsQueryRepository;
-    constructor() {
-        this.postService = new PostsService();
-        this.commentsService = new CommentsService();
-        this.postsRepository = new PostsRepository();
-        this.postsQueryRepository =new PostsQueryRepository();
-        this.commentsQueryRepository = new CommentsQueryRepository();
+    constructor(@inject(PostsService) protected postService: PostsService,
+                @inject(PostsQueryRepository) protected postsQueryRepository: PostsQueryRepository,
+                @inject(PostsRepository) protected postsRepository: PostsRepository,
+                @inject(CommentsService) protected commentsService: CommentsService,
+                @inject(CommentsQueryRepository) protected commentsQueryRepository: CommentsQueryRepository) {
     }
 
     async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {

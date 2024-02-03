@@ -22,10 +22,11 @@ import {
 } from "../middlewares/validators/registration-validator";
 import {SecurityService} from "../domains/security-service";
 import {AuthController} from "./controllers/auth-controller";
+import {container} from "../composition-root";
 
 export const authRouter=Router();
 
-const authControllerInstance = new AuthController();
+const authControllerInstance = container.resolve<AuthController>(AuthController);
 authRouter.get("/me",
     AuthorizationMiddleware,
     authControllerInstance.getMe.bind(authControllerInstance))

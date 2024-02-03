@@ -1,9 +1,11 @@
+import "reflect-metadata"
 import {UserOutputType, UserType} from "../types/users/output";
 import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {userMapper, userMapperAuth} from "../types/users/mapper";
+import {injectable} from "inversify";
 
-
+@injectable()
 export class UsersRepository {
 
     async getUserById(id: string): Promise<UserOutputType | null> {

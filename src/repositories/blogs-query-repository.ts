@@ -5,7 +5,9 @@ import {blogMapper} from "../types/blogs/mapper";
 import {blogCollection} from "../db/mongo/mongo-collections";
 import {ViewModelType} from "../types/view-model";
 import {BlogModel} from "../db/mongoose/models";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsQueryRepository {
 
     async getAllBlogs(sortData: SortBlogRepositoryType, searchData: SearchBlogRepositoryType): Promise<ViewModelType<BlogOutputType>> {

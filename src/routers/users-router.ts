@@ -14,12 +14,13 @@ import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {usersValidationChain} from "../middlewares/validators/users-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {UsersRepository} from "../repositories/users-repository";
+import {container} from "../composition-root";
 
 export const usersRouter = Router();
 
-const userService = new UserService();
-const usersQueryRepository = new UsersQueryRepository();
-const usersRepository = new UsersRepository();
+const userService = container.resolve<UserService>(UserService);
+const usersQueryRepository = container.resolve<UsersQueryRepository>(UsersQueryRepository);
+const usersRepository = container.resolve<UsersRepository>(UsersRepository);
 
 usersRouter.get("/", async (req: RequestWithSearchTerms<QueryUsersRequestType>, res: Response) => {
     const query: QueryUsersRequestType = req.query;

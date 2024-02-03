@@ -14,6 +14,7 @@ import {Tokens} from "../common/utils/tokens";
 import {SecurityService} from "./security-service";
 import {PasswordRecoveryRequestType} from "../types/auth/input";
 import {Password} from "../common/utils/password";
+import {injectable} from "inversify";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ const secretKey = {
     refreshToken: process.env.ACCESS_TOKEN_SECRET_KEY!
 };
 
+@injectable()
 export class AuthService {
     constructor(protected refreshTokenRepository: RefreshTokenRepository,
                 protected usersRepository: UsersRepository,

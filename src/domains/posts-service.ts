@@ -3,7 +3,8 @@ import {PostDtoType} from "../types/posts/output";
 import {PostsRepository} from "../repositories/posts-repository";
 import {postMapper} from "../types/posts/mapper";
 import {PostReqBodyCreateType, UpdatePostDto} from "../types/posts/input";
-
+import {injectable} from "inversify";
+@injectable()
 export class PostsService {
 
     constructor(protected postRepository: PostsRepository,

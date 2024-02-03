@@ -1,7 +1,8 @@
 import {SecuritySessionType, SecuritySessionUpdateType} from "../types/security/output";
 import {securityCollection} from "../db/mongo/mongo-collections";
+import {injectable} from "inversify";
 
-
+@injectable()
 export class SecurityRepository {
     async createNewSession(sessionData: SecuritySessionType) {
         const isCreated = await securityCollection.insertOne(sessionData);

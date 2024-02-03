@@ -4,7 +4,9 @@ import {commentMapper} from "../types/comments/mapper";
 import {SortCommentsType} from "../types/comments/input";
 import {OutputCommentType} from "../types/comments/output";
 import {ViewModelType} from "../types/view-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsQueryRepository {
     async getAllCommentsByPostId(sortData: SortCommentsType, postId: string,): Promise<ViewModelType<OutputCommentType> | null> {
         try {

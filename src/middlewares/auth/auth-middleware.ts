@@ -5,15 +5,16 @@ import {AuthService} from "../../domains/auth-service";
 import {UsersRepository} from "../../repositories/users-repository";
 import {CommentsQueryRepository} from "../../repositories/comments-query-repository";
 import dotenv from "dotenv";
+import {container} from "../../composition-root";
 
 dotenv.config();
 
 const login = process.env.SUPERADMIN_LOGIN!;
 const password = process.env.SUPERADMIN_PASSWORD!;
 
-const authService = new AuthService();
-const usersRepository = new UsersRepository();
-const commentsQueryRepository = new CommentsQueryRepository();
+const authService = container.resolve<AuthService>(AuthService);
+const usersRepository =container.resolve<UsersRepository>(UsersRepository);
+const commentsQueryRepository = container.resolve<CommentsQueryRepository>(CommentsQueryRepository);
 // basic
 export const AuthorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 

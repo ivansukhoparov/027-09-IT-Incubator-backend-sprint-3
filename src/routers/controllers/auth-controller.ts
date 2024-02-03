@@ -1,36 +1,23 @@
-import {
-    emailValidator,
-    loginValidationChain,
-    newPasswordValidation
-} from "../../middlewares/validators/auth-validators";
-import {inputValidationMiddleware} from "../../middlewares/validators/input-validation-middleware";
 import {Request, Response} from "express";
 import {AuthService} from "../../domains/auth-service";
 import {HTTP_STATUSES} from "../../utils/comon";
 import {SecurityService} from "../../domains/security-service";
-import {
-    isEmailConfirmed,
-    registrationValidationChain,
-    uniqueLoginOrEmail
-} from "../../middlewares/validators/registration-validator";
+
 import {RequestWithBody} from "../../types/common";
 import {
     EmailConfirmationCodeResendRequestType,
-    EmailConfirmationCodeType, PasswordRecoveryRequestType,
+    EmailConfirmationCodeType,
+    PasswordRecoveryRequestType,
     RegistrationInfoType
 } from "../../types/auth/input";
-import {authRouter} from "../auth-router";
-import {AuthorizationMiddleware} from "../../middlewares/auth/auth-middleware";
+
+import {inject, injectable} from "inversify";
 
 
-
+@injectable()
 export class AuthController{
-    private authService: AuthService;
-    private securityService: SecurityService;
-
-    constructor() {
-        this.authService = new AuthService();
-        this.securityService = new SecurityService();
+    constructor(@inject(AuthService) protected authService: AuthService,
+                @inject(AuthService) protected securityService: SecurityService) {
     }
 
     async getMe(req: Request, res: Response) {

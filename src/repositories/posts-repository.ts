@@ -3,8 +3,9 @@ import {postMapper} from "../types/posts/mapper";
 import {ObjectId, WithId} from "mongodb";
 import {PostModel} from "../db/mongoose/models";
 import {UpdatePostDto} from "../types/posts/input";
+import {injectable} from "inversify";
 
-
+@injectable()
 export class PostsRepository {
 
     // return all posts from database

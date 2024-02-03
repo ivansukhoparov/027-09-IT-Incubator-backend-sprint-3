@@ -1,5 +1,7 @@
 import {apiRequestsCollection} from "../db/mongo/mongo-collections";
+import {injectable} from "inversify";
 
+@injectable()
 export class ApiRequestsRepository {
     async writeRequest(ip: string, url: string) {
         const result = await apiRequestsCollection.insertOne({

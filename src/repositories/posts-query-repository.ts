@@ -5,8 +5,9 @@ import {postMapper} from "../types/posts/mapper";
 import {ObjectId, WithId} from "mongodb";
 import {ViewModelType} from "../types/view-model";
 import {PostModel} from "../db/mongoose/models";
+import {injectable} from "inversify";
 
-
+@injectable()
 export class PostsQueryRepository {
 
     // return all posts from database

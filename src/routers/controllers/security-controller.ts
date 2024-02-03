@@ -5,14 +5,12 @@ import {SecurityQueryRepository} from "../../repositories/security-query-reposit
 import {Params, RequestWithParams} from "../../types/common";
 import {SecurityService} from "../../domains/security-service";
 import {securityRouter} from "../security-router";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class SecurityController{
-    private securityQueryRepository: SecurityQueryRepository;
-    private securityService: SecurityService;
-
-    constructor() {
-        this.securityQueryRepository = new SecurityQueryRepository();
-        this.securityService = new SecurityService();
+    constructor(@inject(SecurityQueryRepository)    protected securityQueryRepository: SecurityQueryRepository,
+    @inject(SecurityService)    protected securityService: SecurityService) {
     }
 
 

@@ -21,22 +21,18 @@ import {PostsQueryRepository} from "../../repositories/posts-query-repository";
 import {BlogsService} from "../../domains/blogs-service";
 import {PostsService} from "../../domains/posts-service";
 import {BlogsRepository} from "../../repositories/blogs-repository";
+import {inject, injectable} from "inversify";
 
-// Redone delete - it must work through service
+
+@injectable()
 export class BlogController {
-    private blogsQueryRepository: BlogsQueryRepository;
-    private postsQueryRepository: PostsQueryRepository;
-    private blogsService: BlogsService;
-    private postService: PostsService;
-    private blogsRepository: BlogsRepository;
 
-    constructor() {
-        this.blogsQueryRepository = new BlogsQueryRepository();
-        this.blogsRepository = new BlogsRepository();
-        this.postsQueryRepository = new PostsQueryRepository();
-        this.blogsService = new BlogsService();
-        this.postService = new PostsService();
-    }
+
+    constructor( @inject(BlogsQueryRepository)   protected blogsQueryRepository: BlogsQueryRepository,
+                 @inject(PostsQueryRepository)    protected postsQueryRepository: PostsQueryRepository,
+                 @inject(BlogsService)   protected blogsService: BlogsService,
+                 @inject(PostsService)    protected postService: PostsService,
+                 @inject(BlogsRepository)    protected blogsRepository: BlogsRepository) {}
 
     async getAllBlogs(req: RequestWithSearchTerms<QueryBlogRequestType>, res: Response) {
 

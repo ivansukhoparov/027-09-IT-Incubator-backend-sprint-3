@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {Tokens} from "../common/utils/tokens";
-
+import {injectable} from "inversify";
+@injectable()
 export class UserService {
     constructor(protected usersRepository: UsersRepository) {
     }

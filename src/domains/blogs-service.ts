@@ -5,9 +5,10 @@ import {WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
 import {RefreshTokenRepository} from "../repositories/refresh-token-repository";
 import {UsersRepository} from "../repositories/users-repository";
+import {injectable} from "inversify";
 
 
-
+@injectable()
 export class BlogsService {
         constructor(protected blogRepository: BlogsRepository) {
     }

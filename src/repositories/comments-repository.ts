@@ -2,7 +2,9 @@ import {CommentType} from "../types/comments/output";
 import {commentsCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {UpdateCommentDto} from "../types/comments/input";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsRepository{
     async addNewComment(newComment: CommentType): Promise<string | null> {
         try{

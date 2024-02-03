@@ -5,10 +5,11 @@ import {Tokens} from "../common/utils/tokens";
 import {Params, RequestWithParams} from "../types/common";
 import {SecurityService} from "../domains/security-service";
 import {SecurityController} from "./controllers/security-controller";
+import {container} from "../composition-root";
 
 export const securityRouter = Router()
 
-const securityControllerInstance = new SecurityController();
+const securityControllerInstance = container.resolve<SecurityController>(SecurityController);
 
 securityRouter.get("/devices", securityControllerInstance.getDevices.bind(securityControllerInstance))
 

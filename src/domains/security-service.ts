@@ -1,7 +1,8 @@
 import {Tokens} from "../common/utils/tokens";
 import {SecurityRepository} from "../repositories/security-repository";
 import {SecuritySessionUpdateType} from "../types/security/output";
-
+import {injectable} from "inversify";
+@injectable()
 export class SecurityService {
     constructor(protected securityRepository: SecurityRepository) {
     }

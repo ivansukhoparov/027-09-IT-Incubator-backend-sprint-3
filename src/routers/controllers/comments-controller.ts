@@ -5,16 +5,16 @@ import {HTTP_STATUSES} from "../../utils/comon";
 import {UpdateCommentDto} from "../../types/comments/input";
 import {CommentsService} from "../../domains/comments-service";
 import {CommentsRepository} from "../../repositories/comments-repository";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class CommentsController {
-    private commentsQueryRepository: CommentsQueryRepository;
-    private commentService: CommentsService;
-    private commentsRepository: CommentsRepository;
 
-    constructor() {
-        this.commentsQueryRepository = new CommentsQueryRepository();
-        this.commentService = new CommentsService();
-        this.commentsRepository = new CommentsRepository();
+
+    constructor(@inject(CommentsQueryRepository)    protected commentsQueryRepository: CommentsQueryRepository,
+                @inject(CommentsService)    protected  commentService: CommentsService,
+                @inject(CommentsRepository)    protected  commentsRepository: CommentsRepository) {
+
     }
 
     async getComments(req: RequestWithParams<Params>, res: Response) {

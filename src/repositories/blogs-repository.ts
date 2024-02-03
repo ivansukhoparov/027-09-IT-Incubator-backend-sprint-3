@@ -3,7 +3,9 @@ import {UpdateBlogDto} from "../types/blogs/input";
 import {ObjectId, WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
 import {BlogModel} from "../db/mongoose/models";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsRepository {
 
     // return all blogs from database

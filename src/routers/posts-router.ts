@@ -4,21 +4,23 @@ import {validationPostsChains} from "../middlewares/validators/posts-validators"
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {validateComment, validatePost} from "../middlewares/validators/comments-validator";
 import {PostsController} from "./controllers/posts-controller";
+import {container} from "../composition-root";
+import {CommentsController} from "./controllers/comments-controller";
 
 export const postsRouter = Router();
 
-const postsControllerInstance = new PostsController()
+const postsController = container.resolve<PostsController>(PostsController);
 
 //GET
 postsRouter.get("/",
-    postsControllerInstance.getPost.bind(postsControllerInstance));
+    postsController.getPost.bind(postsController));
 
 postsRouter.get("/:id/comments",
     validatePost,
-    postsControllerInstance.getPostComments.bind(postsControllerInstance));
+    postsController.getPostComments.bind(postsController));
 
 postsRouter.get("/:id",
-    postsControllerInstance.getPostById.bind(postsControllerInstance));
+    postsController.getPostById.bind(postsController));
 
 
 // POST
@@ -26,24 +28,24 @@ postsRouter.post('/',
     AuthorizationMiddleware,
     validationPostsChains(),
     inputValidationMiddleware,
-    postsControllerInstance.createPost.bind(postsControllerInstance));
+    postsController.createPost.bind(postsController));
 
 postsRouter.post("/:id/comments",
     AuthorizationMiddleware,
     validatePost,
     validateComment,
     inputValidationMiddleware,
-    postsControllerInstance.createCommentToPost.bind(postsControllerInstance));
+    postsController.createCommentToPost.bind(postsController));
 
 //PUT
 postsRouter.put("/:id",
     AuthorizationMiddleware,
     validationPostsChains(),
     inputValidationMiddleware,
-    postsControllerInstance.updatePost.bind(postsControllerInstance));
+    postsController.updatePost.bind(postsController));
 
 // DELETE
 postsRouter.delete("/:id", AuthorizationMiddleware,
-    postsControllerInstance.deletePost.bind(postsControllerInstance));
+    postsController.deletePost.bind(postsController));
 
 

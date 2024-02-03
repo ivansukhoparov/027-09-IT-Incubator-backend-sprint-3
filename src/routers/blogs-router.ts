@@ -25,36 +25,37 @@ import {PostsQueryRepository} from "../repositories/posts-query-repository";
 import {BlogsService} from "../domains/blogs-service";
 import {PostsService} from "../domains/posts-service";
 import {BlogController} from "./controllers/blog-controller";
+import {container} from "../composition-root";
 
 
 export const blogsRouter = Router();
 
-const blogControllerInstance = new BlogController();
+const blogController = container.resolve<BlogController>(BlogController);
 
-blogsRouter.get("/", blogControllerInstance.getAllBlogs.bind(blogControllerInstance));
+blogsRouter.get("/", blogController.getAllBlogs.bind(blogController));
 
-blogsRouter.get("/:id", blogControllerInstance.getBlogById.bind(blogControllerInstance));
+blogsRouter.get("/:id", blogController.getBlogById.bind(blogController));
 
-blogsRouter.get("/:id/posts", blogControllerInstance.getAllPosts.bind(blogControllerInstance));
+blogsRouter.get("/:id/posts", blogController.getAllPosts.bind(blogController));
 
 blogsRouter.post('/',
     AuthorizationMiddleware,
     validationBlogsChains(),
     inputValidationMiddleware,
-    blogControllerInstance.createBlog.bind(blogControllerInstance));
+    blogController.createBlog.bind(blogController));
 
 blogsRouter.post("/:id/posts",
     AuthorizationMiddleware,
     validationPostsChainsNoBlogId(),
     inputValidationMiddleware,
-    blogControllerInstance.createPost.bind(blogControllerInstance));
+    blogController.createPost.bind(blogController));
 
 blogsRouter.put("/:id",
     AuthorizationMiddleware,
     validationBlogsChains(),
     inputValidationMiddleware,
-    blogControllerInstance.updateBlog.bind(blogControllerInstance));
+    blogController.updateBlog.bind(blogController));
 
 blogsRouter.delete("/:id",
     AuthorizationMiddleware,
-    blogControllerInstance.deleteBlog.bind(blogControllerInstance));
+    blogController.deleteBlog.bind(blogController));

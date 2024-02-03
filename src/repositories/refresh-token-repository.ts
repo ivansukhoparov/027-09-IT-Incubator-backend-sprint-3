@@ -1,5 +1,7 @@
 import {refreshTokensCollection} from "../db/mongo/mongo-collections";
+import {injectable} from "inversify";
 
+@injectable()
 export class RefreshTokenRepository {
 
      async addToBlackList(token:string){

@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import "reflect-metadata"
 import {app} from "./app";
 import {settings} from "./settings";
 import {connectDb} from "./db/connect-db";

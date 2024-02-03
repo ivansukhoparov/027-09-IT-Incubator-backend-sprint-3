@@ -2,11 +2,12 @@ import {CommentType} from "../types/comments/output";
 import {CreateCommentDataType, UpdateCommentDto} from "../types/comments/input";
 import {CommentsRepository} from "../repositories/comments-repository";
 import {CommentsQueryRepository} from "../repositories/comments-query-repository";
-
+import {inject, injectable} from "inversify";
+@injectable()
 export class CommentsService{
 
-    constructor(protected commentsRepository: CommentsRepository,
-                protected commentsQueryRepository: CommentsQueryRepository) {
+    constructor(@inject(CommentsRepository) protected commentsRepository: CommentsRepository,
+                @inject(CommentsQueryRepository)protected commentsQueryRepository: CommentsQueryRepository) {
     }
 
      async createComment(createData: CreateCommentDataType) {

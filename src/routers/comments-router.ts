@@ -9,9 +9,10 @@ import {validateComment} from "../middlewares/validators/comments-validator";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {CommentsService} from "../domains/comments-service";
 import {CommentsController} from "./controllers/comments-controller";
+import {container} from "../composition-root";
 
 export const commentsRouter = Router();
-const commentsControllerInstance = new CommentsController();
+const commentsControllerInstance = container.resolve<CommentsController>(CommentsController);
 
 commentsRouter.get("/:id", commentsControllerInstance.getComments.bind(commentsControllerInstance));
 
