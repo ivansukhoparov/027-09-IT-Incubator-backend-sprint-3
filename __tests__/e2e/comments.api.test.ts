@@ -1,4 +1,5 @@
 import request = require("supertest");
+import mongoose from "mongoose";
 import {app} from "../../src/app";
 import {CreateUserType} from "../../src/types/users/input";
 import {PostReqBodyCreateType} from "../../src/types/posts/input";
@@ -91,7 +92,9 @@ const errorMessage = (field?: string) => {
     }
 }
 describe(routerName, () => {
+    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
     beforeAll(async () => {
+        await mongoose.connect(mongoURI) // Connecting to the database.
         // Delete add data before tests
         await request(app).delete("/testing/all-data");
         // create users for tests
@@ -135,6 +138,10 @@ describe(routerName, () => {
         }
 
     });
+
+    afterAll(async ()=>{
+        await mongoose.connection.close() // Close connection to the database
+    })
 
 
     it("created arrays with test data should be contains data", () => {

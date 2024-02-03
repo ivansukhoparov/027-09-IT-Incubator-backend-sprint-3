@@ -1,4 +1,5 @@
 import request = require("supertest");
+import mongoose from "mongoose";
 import {app} from "../../src/app";
 
 const routerName = "/blogs/";
@@ -46,9 +47,15 @@ const blogs = [
 
 let createdBlogs;
 describe(routerName, () => {
+    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
     // clear DB before testing
     beforeAll(async () => {
+        await mongoose.connect(mongoURI) // Connecting to the database.
         await request(app).delete("/testing/all-data");
+    })
+
+    afterAll(async ()=>{
+        await mongoose.connection.close() // Close connection to the database
     })
 
 

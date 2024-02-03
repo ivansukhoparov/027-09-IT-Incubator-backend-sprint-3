@@ -1,9 +1,15 @@
 import request = require("supertest");
+import mongoose from "mongoose";
 import {app} from "../../src/app";
 import {ErrorsMessageType, ErrorType} from "../../src/types/common";
 import {UsersRepository} from "../../src/repositories/users-repository";
 import {AuthService} from "../../src/domains/auth-service";
 import {usersCollection} from "../../src/db/mongo/mongo-collections";
+import {SecurityRepository} from "../../src/repositories/security-repository";
+import {RefreshTokenRepository} from "../../src/repositories/refresh-token-repository";
+import {SecurityService} from "../../src/domains/security-service";
+import {UserService} from "../../src/domains/user-service";
+import {Tokens} from "../../src/common/utils/tokens";
 
 const routers = {
     main: "/auth",
@@ -130,13 +136,23 @@ const testDataUsers = {
     },
 }
 
-
+const usersRepository = new UsersRepository()
+const userService = new UserService(usersRepository);
+const securityRepository = new SecurityRepository();
+const refreshTokenRepository = new RefreshTokenRepository();
+const securityService = new SecurityService(securityRepository);
+const authService = new AuthService(refreshTokenRepository,usersRepository,securityService,userService);
 describe(routers.main, () => {
-
+    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
     beforeAll(async () => {
+        await mongoose.connect(mongoURI) // Connecting to the database.
         // Delete add data before tests
         await request(app).delete("/testing/all-data");
     });
+
+    afterAll(async ()=>{
+        await mongoose.connection.close() // Close connection to the database
+    })
 
 
     it(" - user registration with empty request should return 400 and errors messages", async () => {
@@ -185,7 +201,7 @@ describe(routers.main, () => {
         expect(testDataUsers.valid_1.responseCode);
 
         expect(res.body).toEqual(testDataUsers.valid_1.response);
-        const user_1 = await UsersRepository.getUserByLoginOrEmail(testDataUsers.valid_1.request.login)
+        const user_1 = await usersRepository.getUserByLoginOrEmail(testDataUsers.valid_1.request.login)
         expect(user_1).not.toBeNull()
         testDataUsers.valid_1.confirmationCode_1 = {code: user_1!.emailConfirmation.confirmationCode};
         expect(user_1!.emailConfirmation.isConfirmed).toBe(false);
@@ -198,7 +214,7 @@ describe(routers.main, () => {
         expect(testDataUsers.valid_2.responseCode);
 
         expect(res.body).toEqual(testDataUsers.valid_2.response);
-        const user_2 = await UsersRepository.getUserByLoginOrEmail(testDataUsers.valid_2.request.login)
+        const user_2 = await usersRepository.getUserByLoginOrEmail(testDataUsers.valid_2.request.login)
         expect(user_2).not.toBeNull()
         testDataUsers.valid_2.confirmationCode_1 = {code: user_2!.emailConfirmation.confirmationCode};
         expect(user_2!.emailConfirmation.isConfirmed).toBe(false);
@@ -232,7 +248,7 @@ describe(routers.main, () => {
 
         expect(res.body).toEqual(validConfirmation.response);
 
-        const user_1 = await UsersRepository.getUserByLoginOrEmail(testDataUsers.valid_1.request.login);
+        const user_1 = await usersRepository.getUserByLoginOrEmail(testDataUsers.valid_1.request.login);
         expect(user_1!.emailConfirmation.isConfirmed).toBe(true);
 
     })
@@ -245,7 +261,7 @@ describe(routers.main, () => {
 
     it(" - confirmation with expired valid code for confirmed user_2 must return 400 and error message", async () => {
         // create new confirmation code with living time 1 sec
-        const newCode = AuthService._createConfirmationCode(testDataUsers.valid_2.request.email, {seconds: 1});
+        const newCode = Tokens.createEmailConfirmationCode(testDataUsers.valid_2.request.email, {seconds: 1});
 
         // write it to db
         await usersCollection.updateOne({login: testDataUsers.valid_2.request.login}, {$set: {"emailConfirmation.confirmationCode": newCode}});
@@ -279,7 +295,7 @@ describe(routers.main, () => {
         const res = await request(app).post(routers.resend).send({email: testDataUsers.valid_2.request.email}).expect(204);
 
         expect(res.body).toEqual({});
-        const user_2 = await UsersRepository.getUserByLoginOrEmail(testDataUsers.valid_2.request.login)
+        const user_2 = await usersRepository.getUserByLoginOrEmail(testDataUsers.valid_2.request.login)
         expect(user_2).not.toBeNull()
         testDataUsers.valid_2.confirmationCode_2 = {code: user_2!.emailConfirmation.confirmationCode};
         expect(user_2!.emailConfirmation.isConfirmed).toBe(false);
@@ -300,7 +316,7 @@ describe(routers.main, () => {
 
         expect(res.body).toEqual(validConfirmation.response);
 
-        const user_2 = await UsersRepository.getUserByLoginOrEmail(testDataUsers.valid_2.request.login);
+        const user_2 = await usersRepository.getUserByLoginOrEmail(testDataUsers.valid_2.request.login);
         expect(user_2!.emailConfirmation.isConfirmed).toBe(true);
 
     })

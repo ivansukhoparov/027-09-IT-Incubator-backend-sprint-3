@@ -1,4 +1,5 @@
 import request from "supertest"
+import mongoose from "mongoose";
 import {app} from "../../src/app";
 import {HTTP_STATUSES} from "../../src/utils/comon";
 import {UserOutputType} from "../../src/types/users/output";
@@ -89,8 +90,14 @@ class ViewModelResponse{
 let user: UserOutputType
 
 describe(routerName, () => {
+    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
     beforeAll(async () => {
+        await mongoose.connect(mongoURI) // Connecting to the database.
         await request(app).delete("/testing/all-data");
+    })
+
+    afterAll(async ()=>{
+        await mongoose.connection.close() // Close connection to the database
     })
 
 
