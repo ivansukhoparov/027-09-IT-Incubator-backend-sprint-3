@@ -9,6 +9,7 @@ import {HTTP_STATUSES} from "../../src/utils/comon";
 import {CreateBlogDto} from "../../src/types/blogs/input";
 import {BlogOutputType} from "../../src/types/blogs/output";
 import {OutputCommentType} from "../../src/types/comments/output";
+import {settings} from "../../src/settings";
 
 interface ITestUserType extends UserOutputType {
     accessToken?: string
@@ -92,7 +93,7 @@ const errorMessage = (field?: string) => {
     }
 }
 describe(routerName, () => {
-    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
+    const mongoURI = settings.env.mongoUri+"/"+settings.env.mongoDbName
     beforeAll(async () => {
         await mongoose.connect(mongoURI) // Connecting to the database.
         // Delete add data before tests

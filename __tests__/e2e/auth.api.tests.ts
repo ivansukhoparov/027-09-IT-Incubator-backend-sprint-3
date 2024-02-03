@@ -10,6 +10,7 @@ import {RefreshTokenRepository} from "../../src/repositories/refresh-token-repos
 import {SecurityService} from "../../src/domains/security-service";
 import {UserService} from "../../src/domains/user-service";
 import {Tokens} from "../../src/common/utils/tokens";
+import {settings} from "../../src/settings";
 
 const routers = {
     main: "/auth",
@@ -143,7 +144,7 @@ const refreshTokenRepository = new RefreshTokenRepository();
 const securityService = new SecurityService(securityRepository);
 const authService = new AuthService(refreshTokenRepository,usersRepository,securityService,userService);
 describe(routers.main, () => {
-    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
+    const mongoURI = settings.env.mongoUri+"/"+settings.env.mongoDbName
     beforeAll(async () => {
         await mongoose.connect(mongoURI) // Connecting to the database.
         // Delete add data before tests

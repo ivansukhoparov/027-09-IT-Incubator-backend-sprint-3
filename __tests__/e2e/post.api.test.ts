@@ -10,10 +10,12 @@ import {
     validCreateData,
     validUpdateData
 } from "./data-sets/post-data-set";
+import exp = require("constants");
+import {settings} from "../../src/settings";
 
 
 describe(routerName, () => {
-    const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
+    const mongoURI = settings.env.mongoUri+"/"+settings.env.mongoDbName
     // clear DB before testing
     beforeAll(async () => {
         await mongoose.connect(mongoURI) // Connecting to the database.
@@ -26,7 +28,8 @@ describe(routerName, () => {
 
 
     it("01 - should be return 200 and empty array", async () => {
-        await request(app).get(routerName).expect(200, emptyBody);
+        const res = await request(app).get(routerName).expect(200);
+        expect(res.body).toEqual(emptyBody)
     })
 
 
