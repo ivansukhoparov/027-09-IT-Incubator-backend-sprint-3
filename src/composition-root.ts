@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {ApiRequestsRepository} from "./repositories/api-requests-repository";
 import {BlogsQueryRepository} from "./repositories/blogs-query-repository";
 import {BlogsRepository} from "./repositories/blogs-repository";
@@ -16,6 +17,9 @@ import {SecurityService} from "./domains/security-service";
 import {BlogsService} from "./domains/blogs-service";
 import {PostsService} from "./domains/posts-service";
 import {CommentsService} from "./domains/comments-service";
+import {Container} from "inversify";
+
+// const container = new Container();
 
 
 const apiRequestRepository = new ApiRequestsRepository();
