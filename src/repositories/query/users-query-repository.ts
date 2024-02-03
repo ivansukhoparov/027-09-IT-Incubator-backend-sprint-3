@@ -1,8 +1,8 @@
-import {SearchUsersRepositoryType, SortUsersRepositoryType} from "../types/users/input";
-import {usersCollection} from "../db/mongo/mongo-collections";
+import {SearchUsersRepositoryType, SortUsersRepositoryType} from "../../types/users/input";
+import {usersCollection} from "../../db/mongo/mongo-collections";
 import {WithId} from "mongodb";
-import {UserType} from "../types/users/output";
-import {userMapper} from "../types/users/mapper";
+import {UserType} from "../../types/users/output";
+import {userMapper} from "../../types/users/mapper";
 import {injectable} from "inversify";
 
 @injectable()

@@ -1,10 +1,10 @@
-import {PostDtoType, PostOutputType} from "../types/posts/output";
-import {PostSortType, SortPostRepositoryType} from "../types/posts/input";
-import {postCollection} from "../db/mongo/mongo-collections";
-import {postMapper} from "../types/posts/mapper";
+import {PostDtoType, PostOutputType} from "../../types/posts/output";
+import {PostSortType, SortPostRepositoryType} from "../../types/posts/input";
+import {postCollection} from "../../db/mongo/mongo-collections";
+import {postMapper} from "../../types/posts/mapper";
 import {ObjectId, WithId} from "mongodb";
-import {ViewModelType} from "../types/view-model";
-import {PostModel} from "../db/mongoose/models";
+import {ViewModelType} from "../../types/view-model";
+import {PostModel} from "../../db/mongoose/models";
 import {injectable} from "inversify";
 
 @injectable()

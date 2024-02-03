@@ -1,6 +1,6 @@
-import {SecurityDevicesOutput} from "../types/security/output";
-import {securityCollection} from "../db/mongo/mongo-collections";
-import {securityMapper} from "../types/security/mapper";
+import {SecurityDevicesOutput} from "../../types/security/output";
+import {securityCollection} from "../../db/mongo/mongo-collections";
+import {securityMapper} from "../../types/security/mapper";
 import {injectable} from "inversify";
 
 @injectable()

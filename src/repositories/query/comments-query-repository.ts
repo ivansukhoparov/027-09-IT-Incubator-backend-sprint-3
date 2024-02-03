@@ -1,9 +1,9 @@
-import {commentsCollection} from "../db/mongo/mongo-collections";
+import {commentsCollection} from "../../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
-import {commentMapper} from "../types/comments/mapper";
-import {SortCommentsType} from "../types/comments/input";
-import {OutputCommentType} from "../types/comments/output";
-import {ViewModelType} from "../types/view-model";
+import {commentMapper} from "../../types/comments/mapper";
+import {SortCommentsType} from "../../types/comments/input";
+import {OutputCommentType} from "../../types/comments/output";
+import {ViewModelType} from "../../types/view-model";
 import {injectable} from "inversify";
 
 @injectable()

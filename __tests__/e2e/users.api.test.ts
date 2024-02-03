@@ -85,7 +85,6 @@ class ViewModelResponse{
         totalCount: 0,
         items: []
     }
-
 }
 
 let user: UserOutputType

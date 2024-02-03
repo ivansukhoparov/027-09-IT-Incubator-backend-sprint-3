@@ -9,7 +9,7 @@ import {
     spaceData,
     validCreateData,
     validUpdateData
-} from "./data-sets/post-data-set";
+} from "./data-sets/post-dataset";
 import exp = require("constants");
 import {settings} from "../../src/settings";
 

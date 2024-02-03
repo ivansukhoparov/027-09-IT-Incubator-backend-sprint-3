@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {PostsQueryRepository} from "../../repositories/posts-query-repository";
+import {PostsQueryRepository} from "../../repositories/query/posts-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
 import {Params, RequestWithParams} from "../../types/common";
 import {body} from "express-validator";

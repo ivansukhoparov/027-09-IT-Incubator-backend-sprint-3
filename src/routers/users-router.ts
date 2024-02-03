@@ -6,7 +6,7 @@ import {
     SearchUsersRepositoryType,
     SortUsersRepositoryType
 } from "../types/users/input";
-import {UsersQueryRepository} from "../repositories/users-query-repository";
+import {UsersQueryRepository} from "../repositories/query/users-query-repository";
 import {UserOutputType} from "../types/users/output";
 import {UserService} from "../domains/user-service";
 import {HTTP_STATUSES} from "../utils/comon";

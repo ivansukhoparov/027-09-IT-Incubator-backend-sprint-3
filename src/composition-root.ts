@@ -1,16 +1,16 @@
 import "reflect-metadata"
 // Repository
 import {ApiRequestsRepository} from "./repositories/api-requests-repository";
-import {BlogsQueryRepository} from "./repositories/blogs-query-repository";
+import {BlogsQueryRepository} from "./repositories/query/blogs-query-repository";
 import {BlogsRepository} from "./repositories/blogs-repository";
-import {CommentsQueryRepository} from "./repositories/comments-query-repository";
+import {CommentsQueryRepository} from "./repositories/query/comments-query-repository";
 import {CommentsRepository} from "./repositories/comments-repository";
-import {PostsQueryRepository} from "./repositories/posts-query-repository";
+import {PostsQueryRepository} from "./repositories/query/posts-query-repository";
 import {PostsRepository} from "./repositories/posts-repository";
 import {UsersRepository} from "./repositories/users-repository";
-import {UsersQueryRepository} from "./repositories/users-query-repository";
+import {UsersQueryRepository} from "./repositories/query/users-query-repository";
 import {RefreshTokenRepository} from "./repositories/refresh-token-repository";
-import {SecurityQueryRepository} from "./repositories/security-query-repository";
+import {SecurityQueryRepository} from "./repositories/query/security-query-repository";
 import {SecurityRepository} from "./repositories/security-repository";
 // Services
 import {AuthService} from "./domains/auth-service";

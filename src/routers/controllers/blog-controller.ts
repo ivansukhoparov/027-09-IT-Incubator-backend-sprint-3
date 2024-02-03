@@ -14,10 +14,10 @@ import {
     UpdateBlogDto
 } from "../../types/blogs/input";
 import {Response} from "express";
-import {BlogsQueryRepository} from "../../repositories/blogs-query-repository";
+import {BlogsQueryRepository} from "../../repositories/query/blogs-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
 import {PostReqBodyCreateType, QueryPostRequestType, SortPostRepositoryType} from "../../types/posts/input";
-import {PostsQueryRepository} from "../../repositories/posts-query-repository";
+import {PostsQueryRepository} from "../../repositories/query/posts-query-repository";
 import {BlogsService} from "../../domains/blogs-service";
 import {PostsService} from "../../domains/posts-service";
 import {BlogsRepository} from "../../repositories/blogs-repository";

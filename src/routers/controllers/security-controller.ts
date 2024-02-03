@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {Tokens} from "../../common/utils/tokens";
 import {HTTP_STATUSES} from "../../utils/comon";
-import {SecurityQueryRepository} from "../../repositories/security-query-repository";
+import {SecurityQueryRepository} from "../../repositories/query/security-query-repository";
 import {Params, RequestWithParams} from "../../types/common";
 import {SecurityService} from "../../domains/security-service";
 import {securityRouter} from "../security-router";

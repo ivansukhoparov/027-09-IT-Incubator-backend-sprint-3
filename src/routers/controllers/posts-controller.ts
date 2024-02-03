@@ -14,10 +14,10 @@ import {
     UpdatePostDto
 } from "../../types/posts/input";
 import {Response} from "express";
-import {PostsQueryRepository} from "../../repositories/posts-query-repository";
+import {PostsQueryRepository} from "../../repositories/query/posts-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
 import {CreateCommentDataType, CreateCommentDto, SortCommentsType} from "../../types/comments/input";
-import {CommentsQueryRepository} from "../../repositories/comments-query-repository";
+import {CommentsQueryRepository} from "../../repositories/query/comments-query-repository";
 import {CommentsService} from "../../domains/comments-service";
 import {PostsRepository} from "../../repositories/posts-repository";
 import {inject, injectable} from "inversify";

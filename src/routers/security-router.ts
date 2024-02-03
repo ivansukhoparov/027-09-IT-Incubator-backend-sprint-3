@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {HTTP_STATUSES} from "../utils/comon";
-import {SecurityQueryRepository} from "../repositories/security-query-repository";
+import {SecurityQueryRepository} from "../repositories/query/security-query-repository";
 import {Tokens} from "../common/utils/tokens";
 import {Params, RequestWithParams} from "../types/common";
 import {SecurityService} from "../domains/security-service";

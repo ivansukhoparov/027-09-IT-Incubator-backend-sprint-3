@@ -1,6 +1,6 @@
 import {Params, RequestWithBodyAndParams, RequestWithParams} from "../../types/common";
 import {Response} from "express";
-import {CommentsQueryRepository} from "../../repositories/comments-query-repository";
+import {CommentsQueryRepository} from "../../repositories/query/comments-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
 import {UpdateCommentDto} from "../../types/comments/input";
 import {CommentsService} from "../../domains/comments-service";

@@ -1,6 +1,6 @@
 import {Response, Router} from "express";
 import {Params, RequestWithBodyAndParams, RequestWithParams} from "../types/common";
-import {CommentsQueryRepository} from "../repositories/comments-query-repository";
+import {CommentsQueryRepository} from "../repositories/query/comments-query-repository";
 import {HTTP_STATUSES} from "../utils/comon";
 import {CommentsRepository} from "../repositories/comments-repository";
 import {accessRight, AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";

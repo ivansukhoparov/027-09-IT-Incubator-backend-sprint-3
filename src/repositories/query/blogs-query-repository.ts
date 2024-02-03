@@ -1,10 +1,10 @@
-import {BlogOutputType, BlogType} from "../types/blogs/output";
-import {SearchBlogRepositoryType, SortBlogRepositoryType,} from "../types/blogs/input";
+import {BlogOutputType, BlogType} from "../../types/blogs/output";
+import {SearchBlogRepositoryType, SortBlogRepositoryType,} from "../../types/blogs/input";
 import {ObjectId, WithId} from "mongodb";
-import {blogMapper} from "../types/blogs/mapper";
-import {blogCollection} from "../db/mongo/mongo-collections";
-import {ViewModelType} from "../types/view-model";
-import {BlogModel} from "../db/mongoose/models";
+import {blogMapper} from "../../types/blogs/mapper";
+import {blogCollection} from "../../db/mongo/mongo-collections";
+import {ViewModelType} from "../../types/view-model";
+import {BlogModel} from "../../db/mongoose/models";
 import {injectable} from "inversify";
 
 @injectable()

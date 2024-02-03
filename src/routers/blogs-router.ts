@@ -18,10 +18,10 @@ import {inputValidationMiddleware} from "../middlewares/validators/input-validat
 import {validationBlogsChains} from "../middlewares/validators/blogs-validators";
 import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {HTTP_STATUSES} from "../utils/comon";
-import {BlogsQueryRepository} from "../repositories/blogs-query-repository";
+import {BlogsQueryRepository} from "../repositories/query/blogs-query-repository";
 import {validationPostsChainsNoBlogId} from "../middlewares/validators/posts-validators";
 import {PostReqBodyCreateType, QueryPostRequestType, SortPostRepositoryType} from "../types/posts/input";
-import {PostsQueryRepository} from "../repositories/posts-query-repository";
+import {PostsQueryRepository} from "../repositories/query/posts-query-repository";
 import {BlogsService} from "../domains/blogs-service";
 import {PostsService} from "../domains/posts-service";
 import {BlogController} from "./controllers/blog-controller";
