@@ -14,8 +14,7 @@ import {createQuery} from "./utils/create-query";
 export class UsersController {
 
     constructor(@inject(UserService) protected userService: UserService,
-                @inject(UsersQueryRepository) protected usersQueryRepository: UsersQueryRepository,
-                @inject(UsersRepository) protected usersRepository: UsersRepository) {
+                @inject(UsersQueryRepository) protected usersQueryRepository: UsersQueryRepository) {
     }
 
     async getUsers(req: RequestWithSearchTerms<QueryUsersRequestType>, res: Response) {
