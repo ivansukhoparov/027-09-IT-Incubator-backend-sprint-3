@@ -9,6 +9,7 @@ import {HTTP_STATUSES} from "../../utils/comon";
 import {inject, injectable} from "inversify";
 import {errorsHandler} from "../../utils/errors-handler";
 import {createQuery} from "./utils/create-query";
+import {ViewModelType} from "../../types/view-model";
 
 @injectable()
 export class UsersController {
@@ -20,7 +21,7 @@ export class UsersController {
     async getUsers(req: RequestWithSearchTerms<QueryUsersRequestType>, res: Response) {
        try {
             const {sortData, searchData} = createQuery(req.query)
-            const users = await this.usersQueryRepository.getAllUsers(sortData, searchData);
+            const users:ViewModelType<UserOutputType> = await this.usersQueryRepository.getAllUsers(sortData, searchData);
             res.status(HTTP_STATUSES.OK_200).json(users)
         }catch (err) {
            errorsHandler(res, err);

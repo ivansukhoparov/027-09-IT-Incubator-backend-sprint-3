@@ -16,3 +16,5 @@ export const createQuery = (query: QueryUsersRequestType) => {
 
     return {sortData, searchData};
 }
+
+// searchNameTerm: req.query.searchNameTerm || null

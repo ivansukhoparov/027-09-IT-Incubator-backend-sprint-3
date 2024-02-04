@@ -5,11 +5,12 @@ import {UserOutputType, UserType} from "../../types/users/output";
 import {userMapper} from "../../types/users/mapper";
 import {injectable} from "inversify";
 import {ERRORS} from "../../utils/errors-handler";
+import {ViewModelType} from "../../types/view-model";
 
 @injectable()
 export class UsersQueryRepository {
 
-    async getAllUsers(sortData: SortUsersRepositoryType, searchData: SearchUsersRepositoryType) {
+    async getAllUsers(sortData: SortUsersRepositoryType, searchData: SearchUsersRepositoryType):Promise<ViewModelType<UserOutputType>> {
 
         let sortKey = {};
         let searchKey = {};
