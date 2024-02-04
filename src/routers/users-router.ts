@@ -1,58 +1,20 @@
-import {Response, Router} from "express";
-import {Params, RequestWithBody, RequestWithParams, RequestWithSearchTerms} from "../types/common";
-import {
-    CreateUserType,
-    QueryUsersRequestType,
-    SearchUsersRepositoryType,
-    SortUsersRepositoryType
-} from "../types/users/input";
-import {UsersQueryRepository} from "../repositories/query/users-query-repository";
-import {UserOutputType} from "../types/users/output";
-import {UserService} from "../domains/user-service";
-import {HTTP_STATUSES} from "../utils/comon";
+import {Router} from "express";
 import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {usersValidationChain} from "../middlewares/validators/users-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
-import {UsersRepository} from "../repositories/users-repository";
 import {container} from "../composition-root";
+import {UsersController} from "./controllers/users-controller";
 
 export const usersRouter = Router();
 
-const userService = container.resolve<UserService>(UserService);
-const usersQueryRepository = container.resolve<UsersQueryRepository>(UsersQueryRepository);
-const usersRepository = container.resolve<UsersRepository>(UsersRepository);
+const userController = container.resolve<UsersController>(UsersController);
 
-usersRouter.get("/", async (req: RequestWithSearchTerms<QueryUsersRequestType>, res: Response) => {
-    const query: QueryUsersRequestType = req.query;
 
-    const sortData: SortUsersRepositoryType = {
-        sortBy: query.sortBy || "createdAt",
-        sortDirection: query.sortDirection || "desc",
-        pageNumber: query.pageNumber || 1,
-        pageSize: query.pageSize || 10
-    }
-    const searchData: SearchUsersRepositoryType = {
-        searchLoginTerm: query.searchLoginTerm || null,
-        searchEmailTerm: query.searchEmailTerm || null
-    }
+usersRouter.get("/", userController.getUsers.bind(userController))
 
-    const users = await usersQueryRepository.getAllUsers(sortData, searchData);
+usersRouter.post("/", AuthorizationMiddleware,
+    usersValidationChain(),
+    inputValidationMiddleware,
+    userController.createUser.bind(userController))
 
-    res.json(users)
-})
-
-usersRouter.post("/", AuthorizationMiddleware, usersValidationChain(),inputValidationMiddleware,  async (req:RequestWithBody<CreateUserType>, res:Response)=>{
-
-    const createdUser: UserOutputType | null = await userService.createUser(req.body.login, req.body.email, req.body.password, true);
-    if (!createdUser) {
-        res.status(HTTP_STATUSES.BAD_REQUEST_400);
-        return
-    }
-    res.status(HTTP_STATUSES.CREATED_201).json(createdUser);
-})
-
-usersRouter.delete("/:id",AuthorizationMiddleware, async (req: RequestWithParams<Params>, res: Response) => {
-    const isDeleted = await  usersRepository.deleteUser(req.params.id);
-    if (!isDeleted) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    else res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-})
+usersRouter.delete("/:id",AuthorizationMiddleware, userController.deleteUser.bind(userController))

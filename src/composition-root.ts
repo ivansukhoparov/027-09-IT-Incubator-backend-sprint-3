@@ -28,6 +28,7 @@ import {BlogController} from "./routers/controllers/blog-controller";
 import {CommentsController} from "./routers/controllers/comments-controller";
 import {PostsController} from "./routers/controllers/posts-controller";
 import {SecurityController} from "./routers/controllers/security-controller";
+import {UsersController} from "./routers/controllers/users-controller";
 
 export const container = new Container();
 
@@ -57,6 +58,6 @@ container.bind(BlogController).to(BlogController);
 container.bind(CommentsController).to(CommentsController);
 container.bind(PostsController).to(PostsController);
 container.bind(SecurityController).to(SecurityController);
-
+container.bind(UsersController).to(UsersController);
 
 
