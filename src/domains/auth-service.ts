@@ -80,7 +80,7 @@ export class AuthService {
 
      async registerUser(login: string, email: string, password: string) {
 
-         await this.userService.createUser(login, email, password);
+         await this.userService.create(login, email, password);
         const createdUser = await this.usersRepository.getUserByLoginOrEmail(email);
         if (!createdUser) return false;
         const isEmailSent = await EmailAdapter.sendEmailConfirmationEmail(createdUser);
