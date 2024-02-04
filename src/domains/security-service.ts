@@ -4,66 +4,66 @@ import {SecuritySessionUpdateType} from "../types/security/output";
 import {injectable} from "inversify";
 @injectable()
 export class SecurityService {
-    constructor(protected securityRepository: SecurityRepository) {
-    }
+	constructor(protected securityRepository: SecurityRepository) {
+	}
 
-     async createAuthSession(refreshToken: string, deviceTitle: string, ip: string): Promise<boolean> {
+	async createAuthSession(refreshToken: string, deviceTitle: string, ip: string): Promise<boolean> {
 
-        const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        if (!decodedToken) return false
+		const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+		if (!decodedToken) return false;
 
-        const newSession = {
-            userId: decodedToken.userId,
-            deviceId: decodedToken.deviceId,
-            deviceTitle: deviceTitle,
-            ip: ip,
-            lastActiveDate: decodedToken.iat,
-            refreshToken: {
-                createdAt: decodedToken.iat,
-                expiredAt: decodedToken.exp,
-            }
-        }
+		const newSession = {
+			userId: decodedToken.userId,
+			deviceId: decodedToken.deviceId,
+			deviceTitle: deviceTitle,
+			ip: ip,
+			lastActiveDate: decodedToken.iat,
+			refreshToken: {
+				createdAt: decodedToken.iat,
+				expiredAt: decodedToken.exp,
+			}
+		};
 
-        await this.securityRepository.createNewSession(newSession);
-        return true
-    }
+		await this.securityRepository.createNewSession(newSession);
+		return true;
+	}
 
-      async updateAuthSession(refreshToken: string): Promise<boolean> {
+	async updateAuthSession(refreshToken: string): Promise<boolean> {
 
-        const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        if (!decodedToken) return false
+		const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+		if (!decodedToken) return false;
 
-        const updateData:SecuritySessionUpdateType = {
-            lastActiveDate: decodedToken.iat,
-            refreshToken: {
-                createdAt: decodedToken.iat,
-                expiredAt: decodedToken.exp,
-            }
-        }
+		const updateData:SecuritySessionUpdateType = {
+			lastActiveDate: decodedToken.iat,
+			refreshToken: {
+				createdAt: decodedToken.iat,
+				expiredAt: decodedToken.exp,
+			}
+		};
 
-        return this.securityRepository.updateSession(decodedToken.deviceId, updateData);
-    }
+		return this.securityRepository.updateSession(decodedToken.deviceId, updateData);
+	}
 
-      async terminateAuthSession(refreshToken:string, deviceId: string){
-        const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        const session = await this.securityRepository.getSessionByDeviceId(deviceId);
-        if (decodedToken?.userId!==session?.userId){
-            return false;
-        }
-        return  this.securityRepository.deleteSession(deviceId);
-    }
+	async terminateAuthSession(refreshToken:string, deviceId: string){
+		const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+		const session = await this.securityRepository.getSessionByDeviceId(deviceId);
+		if (decodedToken?.userId!==session?.userId){
+			return false;
+		}
+		return  this.securityRepository.deleteSession(deviceId);
+	}
 
-      async terminateCurrentSession(refreshToken:string){
-        const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        const session = await this.securityRepository.getSessionByDeviceId(decodedToken!.deviceId);
-        if (decodedToken?.userId!==session?.userId){
-            return false;
-        }
-        return  this.securityRepository.deleteSession(decodedToken!.deviceId);
-    }
+	async terminateCurrentSession(refreshToken:string){
+		const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+		const session = await this.securityRepository.getSessionByDeviceId(decodedToken!.deviceId);
+		if (decodedToken?.userId!==session?.userId){
+			return false;
+		}
+		return  this.securityRepository.deleteSession(decodedToken!.deviceId);
+	}
 
-      async terminateOtherAuthSessions(refreshToken:string){
-        const decodedToken = Tokens.decodeRefreshToken(refreshToken);
-        return await this.securityRepository.deleteSessionsExpectCurrent(decodedToken!.userId,decodedToken!.deviceId)
-    }
+	async terminateOtherAuthSessions(refreshToken:string){
+		const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+		return await this.securityRepository.deleteSessionsExpectCurrent(decodedToken!.userId,decodedToken!.deviceId);
+	}
 }

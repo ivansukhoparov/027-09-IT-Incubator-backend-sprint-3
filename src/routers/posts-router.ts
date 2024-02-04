@@ -13,39 +13,39 @@ const postsController = container.resolve<PostsController>(PostsController);
 
 //GET
 postsRouter.get("/",
-    postsController.getPost.bind(postsController));
+	postsController.getPost.bind(postsController));
 
 postsRouter.get("/:id/comments",
-    validatePost,
-    postsController.getPostComments.bind(postsController));
+	validatePost,
+	postsController.getPostComments.bind(postsController));
 
 postsRouter.get("/:id",
-    postsController.getPostById.bind(postsController));
+	postsController.getPostById.bind(postsController));
 
 
 // POST
-postsRouter.post('/',
-    AuthorizationMiddleware,
-    validationPostsChains(),
-    inputValidationMiddleware,
-    postsController.createPost.bind(postsController));
+postsRouter.post("/",
+	AuthorizationMiddleware,
+	validationPostsChains(),
+	inputValidationMiddleware,
+	postsController.createPost.bind(postsController));
 
 postsRouter.post("/:id/comments",
-    AuthorizationMiddleware,
-    validatePost,
-    validateComment,
-    inputValidationMiddleware,
-    postsController.createCommentToPost.bind(postsController));
+	AuthorizationMiddleware,
+	validatePost,
+	validateComment,
+	inputValidationMiddleware,
+	postsController.createCommentToPost.bind(postsController));
 
 //PUT
 postsRouter.put("/:id",
-    AuthorizationMiddleware,
-    validationPostsChains(),
-    inputValidationMiddleware,
-    postsController.updatePost.bind(postsController));
+	AuthorizationMiddleware,
+	validationPostsChains(),
+	inputValidationMiddleware,
+	postsController.updatePost.bind(postsController));
 
 // DELETE
 postsRouter.delete("/:id", AuthorizationMiddleware,
-    postsController.deletePost.bind(postsController));
+	postsController.deletePost.bind(postsController));
 
 

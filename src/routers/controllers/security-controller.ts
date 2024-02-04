@@ -9,56 +9,56 @@ import {inject, injectable} from "inversify";
 
 @injectable()
 export class SecurityController{
-    constructor(@inject(SecurityQueryRepository)    protected securityQueryRepository: SecurityQueryRepository,
+	constructor(@inject(SecurityQueryRepository)    protected securityQueryRepository: SecurityQueryRepository,
     @inject(SecurityService)    protected securityService: SecurityService) {
-    }
+	}
 
 
-     async getDevices(req: Request, res: Response) {
-    const refreshToken = req.cookies.refreshToken;
-    const isValid = await  Tokens.verifyRefreshToken(refreshToken);
-    if (!isValid) {
-    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
-    return;
-}
-const decodedToken = Tokens.decodeRefreshToken(refreshToken);
+	async getDevices(req: Request, res: Response) {
+		const refreshToken = req.cookies.refreshToken;
+		const isValid = await  Tokens.verifyRefreshToken(refreshToken);
+		if (!isValid) {
+			res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+			return;
+		}
+		const decodedToken = Tokens.decodeRefreshToken(refreshToken);
 
-const sessions = await this.securityQueryRepository.getSessionByUserId(decodedToken!.userId)
-res.status(HTTP_STATUSES.OK_200).json(sessions);
-}
+		const sessions = await this.securityQueryRepository.getSessionByUserId(decodedToken!.userId);
+		res.status(HTTP_STATUSES.OK_200).json(sessions);
+	}
 
 
-async terminateDevice(req: RequestWithParams<Params>, res: Response)  {
-    const refreshToken = req.cookies.refreshToken;
-    const isValid = await Tokens.verifyRefreshToken(refreshToken);
-    if (!isValid) {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
-        return;
-    }
-    const isSession = await this.securityQueryRepository.getSessionByDeviceId(req.params.id)
-    if (!isSession) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return;
-    }
-    const isDeleted = await this.securityService.terminateAuthSession(refreshToken, req.params.id)
-    if (!isDeleted) {
-        res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
-        return;
-    }
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-}
+	async terminateDevice(req: RequestWithParams<Params>, res: Response)  {
+		const refreshToken = req.cookies.refreshToken;
+		const isValid = await Tokens.verifyRefreshToken(refreshToken);
+		if (!isValid) {
+			res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+			return;
+		}
+		const isSession = await this.securityQueryRepository.getSessionByDeviceId(req.params.id);
+		if (!isSession) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+			return;
+		}
+		const isDeleted = await this.securityService.terminateAuthSession(refreshToken, req.params.id);
+		if (!isDeleted) {
+			res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
+			return;
+		}
+		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+	}
 
- async terminateAllDevices(req: RequestWithParams<Params>, res: Response) {
-    const refreshToken = req.cookies.refreshToken;
-    const isValid = await Tokens.verifyRefreshToken(refreshToken);
-    if (!isValid) {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
-        return;
-    }
+	async terminateAllDevices(req: RequestWithParams<Params>, res: Response) {
+		const refreshToken = req.cookies.refreshToken;
+		const isValid = await Tokens.verifyRefreshToken(refreshToken);
+		if (!isValid) {
+			res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+			return;
+		}
 
-    await this.securityService.terminateOtherAuthSessions(refreshToken)
+		await this.securityService.terminateOtherAuthSessions(refreshToken);
 
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-}
+		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+	}
 
 }

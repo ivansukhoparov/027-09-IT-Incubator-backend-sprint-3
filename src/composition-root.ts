@@ -1,4 +1,4 @@
-import "reflect-metadata"
+import "reflect-metadata";
 // Repository
 import {ApiRequestsRepository} from "./repositories/api-requests-repository";
 import {BlogsQueryRepository} from "./repositories/query/blogs-query-repository";

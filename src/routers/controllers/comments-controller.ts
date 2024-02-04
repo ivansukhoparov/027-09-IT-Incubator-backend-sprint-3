@@ -11,47 +11,47 @@ import {inject, injectable} from "inversify";
 export class CommentsController {
 
 
-    constructor(@inject(CommentsQueryRepository)    protected commentsQueryRepository: CommentsQueryRepository,
+	constructor(@inject(CommentsQueryRepository)    protected commentsQueryRepository: CommentsQueryRepository,
                 @inject(CommentsService)    protected  commentService: CommentsService,
                 @inject(CommentsRepository)    protected  commentsRepository: CommentsRepository) {
 
-    }
+	}
 
-    async getComments(req: RequestWithParams<Params>, res: Response) {
-        const comment = await this.commentsQueryRepository.getCommentById(req.params.id);
-        if (!comment) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-            return;
-        }
-        res.status(HTTP_STATUSES.OK_200).json(comment);
-    }
+	async getComments(req: RequestWithParams<Params>, res: Response) {
+		const comment = await this.commentsQueryRepository.getCommentById(req.params.id);
+		if (!comment) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+			return;
+		}
+		res.status(HTTP_STATUSES.OK_200).json(comment);
+	}
 
 
-    async updateComment(req: RequestWithBodyAndParams<Params, { content: string }>, res: Response) {
+	async updateComment(req: RequestWithBodyAndParams<Params, { content: string }>, res: Response) {
 
-        const updateData: UpdateCommentDto = {
-            content: req.body.content
-        }
+		const updateData: UpdateCommentDto = {
+			content: req.body.content
+		};
 
-        const isUpdated = await this.commentService.updatePost(updateData, req.params.id,);
-        if (!isUpdated) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            return;
-        }
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    }
+		const isUpdated = await this.commentService.updatePost(updateData, req.params.id,);
+		if (!isUpdated) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+			return;
+		}
+		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+	}
 
-    async deleteComment(req: RequestWithParams<Params>, res: Response) {
-        const isDeleted = await this.commentsRepository.deleteCommentById(req.params.id);
-        if (isDeleted === null) {
-            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
-            return;
-        }
-        if (!isDeleted) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-            return;
-        }
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    }
+	async deleteComment(req: RequestWithParams<Params>, res: Response) {
+		const isDeleted = await this.commentsRepository.deleteCommentById(req.params.id);
+		if (isDeleted === null) {
+			res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+			return;
+		}
+		if (!isDeleted) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+			return;
+		}
+		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+	}
 
 }

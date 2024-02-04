@@ -1,12 +1,12 @@
 import mongoose, {mongo} from "mongoose";
 import {
-    apiRequestSchema,
-    blogSchema,
-    commentSchema,
-    postSchema,
-    refreshTokenSchema,
-    securitySchema,
-    userSchema
+	apiRequestSchema,
+	blogSchema,
+	commentSchema,
+	postSchema,
+	refreshTokenSchema,
+	securitySchema,
+	userSchema
 } from "./schemas";
 import {BlogType} from "../../types/blogs/output";
 import {PostDtoType} from "../../types/posts/output";

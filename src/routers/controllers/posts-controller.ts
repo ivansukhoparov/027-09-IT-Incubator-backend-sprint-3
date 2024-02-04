@@ -1,17 +1,17 @@
 import {PostsService} from "../../domains/posts-service";
 import {
-    Params,
-    RequestWithBody,
-    RequestWithBodyAndParams,
-    RequestWithParams,
-    RequestWithSearchTerms,
-    RequestWithSearchTermsAndParams
+	Params,
+	RequestWithBody,
+	RequestWithBodyAndParams,
+	RequestWithParams,
+	RequestWithSearchTerms,
+	RequestWithSearchTermsAndParams
 } from "../../types/common";
 import {
-    PostReqBodyCreateType,
-    QueryPostRequestType,
-    SortPostRepositoryType,
-    UpdatePostDto
+	PostReqBodyCreateType,
+	QueryPostRequestType,
+	SortPostRepositoryType,
+	UpdatePostDto
 } from "../../types/posts/input";
 import {Response} from "express";
 import {PostsQueryRepository} from "../../repositories/query/posts-query-repository";
@@ -25,92 +25,92 @@ import {CommentsRepository} from "../../repositories/comments-repository";
 
 @injectable()
 export class PostsController {
-    constructor(@inject(PostsService) protected postService: PostsService,
+	constructor(@inject(PostsService) protected postService: PostsService,
                 @inject(PostsQueryRepository) protected postsQueryRepository: PostsQueryRepository,
                 @inject(PostsRepository) protected postsRepository: PostsRepository,
                 @inject(CommentsService) protected commentsService: CommentsService,
                 @inject(CommentsQueryRepository) protected commentsQueryRepository: CommentsQueryRepository) {
-    }
+	}
 
-    async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {
-        try {
-            const sortData: SortPostRepositoryType = {
-                sortBy: req.query.sortBy || "createdAt",
-                sortDirection: req.query.sortDirection || "desc",
-                pageNumber: req.query.pageNumber || 1,
-                pageSize: req.query.pageSize || 10
-            }
-            const posts = await this.postsQueryRepository.getAllPosts(sortData);
-            res.status(HTTP_STATUSES.OK_200).json(posts);
-        } catch {
-            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
-        }
+	async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {
+		try {
+			const sortData: SortPostRepositoryType = {
+				sortBy: req.query.sortBy || "createdAt",
+				sortDirection: req.query.sortDirection || "desc",
+				pageNumber: req.query.pageNumber || 1,
+				pageSize: req.query.pageSize || 10
+			};
+			const posts = await this.postsQueryRepository.getAllPosts(sortData);
+			res.status(HTTP_STATUSES.OK_200).json(posts);
+		} catch {
+			res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+		}
 
-    }
+	}
 
-    async getPostById(req: RequestWithParams<Params>, res: Response) {
-        try {
-            const post = await this.postsQueryRepository.getPostById(req.params.id);
-            res.status(HTTP_STATUSES.OK_200).json(post);
-        } catch(err:any) {
-            if (err.message === "not_found"){
-                res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            }else {
-                res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
-            }
-        }
-    }
+	async getPostById(req: RequestWithParams<Params>, res: Response) {
+		try {
+			const post = await this.postsQueryRepository.getPostById(req.params.id);
+			res.status(HTTP_STATUSES.OK_200).json(post);
+		} catch(err:any) {
+			if (err.message === "not_found"){
+				res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+			}else {
+				res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+			}
+		}
+	}
 
-    async getPostComments(req: RequestWithSearchTermsAndParams<Params, any>, res: Response) {
-        const sortData: SortCommentsType = {
-            sortBy: req.query.sortBy || "createdAt",
-            sortDirection: req.query.sortDirection === "asc" ? 1 : -1,
-            pageNumber: +req.query.pageNumber || 1,
-            pageSize: +req.query.pageSize || 10
-        }
-        const comments = await this.commentsQueryRepository.getAllCommentsByPostId(sortData, req.params.id);
-        if (!comments) {
-            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
-            return;
-        }
-        res.status(HTTP_STATUSES.OK_200).json(comments);
-    }
+	async getPostComments(req: RequestWithSearchTermsAndParams<Params, any>, res: Response) {
+		const sortData: SortCommentsType = {
+			sortBy: req.query.sortBy || "createdAt",
+			sortDirection: req.query.sortDirection === "asc" ? 1 : -1,
+			pageNumber: +req.query.pageNumber || 1,
+			pageSize: +req.query.pageSize || 10
+		};
+		const comments = await this.commentsQueryRepository.getAllCommentsByPostId(sortData, req.params.id);
+		if (!comments) {
+			res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+			return;
+		}
+		res.status(HTTP_STATUSES.OK_200).json(comments);
+	}
 
-    async createPost(req: RequestWithBody<PostReqBodyCreateType>, res: Response) {
-        try {
-            const createdPost = await this.postService.createNewPost(req.body)
-            res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
-        } catch {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        }
-    }
+	async createPost(req: RequestWithBody<PostReqBodyCreateType>, res: Response) {
+		try {
+			const createdPost = await this.postService.createNewPost(req.body);
+			res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
+		} catch {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		}
+	}
 
-    async createCommentToPost(req: RequestWithBodyAndParams<Params, CreateCommentDto>, res: Response) {
-        const createCommentData: CreateCommentDataType = {
-            content: req.body.content,
-            userId: req.user.id,
-            userLogin: req.user.login,
-            postId: req.params.id
-        };
-        const comment = await this.commentsService.createComment(createCommentData);
-        if (!comment) {
-            res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
-            return;
-        }
-        res.status(HTTP_STATUSES.CREATED_201).json(comment);
-    }
+	async createCommentToPost(req: RequestWithBodyAndParams<Params, CreateCommentDto>, res: Response) {
+		const createCommentData: CreateCommentDataType = {
+			content: req.body.content,
+			userId: req.user.id,
+			userLogin: req.user.login,
+			postId: req.params.id
+		};
+		const comment = await this.commentsService.createComment(createCommentData);
+		if (!comment) {
+			res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
+			return;
+		}
+		res.status(HTTP_STATUSES.CREATED_201).json(comment);
+	}
 
-    async updatePost(req: RequestWithBodyAndParams<Params, UpdatePostDto>, res: Response) {
-        try {
-            const isUpdated = await this.postService.updatePost(req.body, req.params.id);
-        }catch {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        }
-    }
+	async updatePost(req: RequestWithBodyAndParams<Params, UpdatePostDto>, res: Response) {
+		try {
+			const isUpdated = await this.postService.updatePost(req.body, req.params.id);
+		}catch {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		}
+	}
 
-    async deletePost(req: RequestWithParams<Params>, res: Response) {
-        const isDeleted = await this.postsRepository.deletePost(req.params.id);
-        if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-        else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    }
+	async deletePost(req: RequestWithParams<Params>, res: Response) {
+		const isDeleted = await this.postsRepository.deletePost(req.params.id);
+		if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+		else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+	}
 }

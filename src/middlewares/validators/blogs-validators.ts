@@ -4,4 +4,4 @@ const validateBlogName = body("name").trim().isString().notEmpty().isLength({min
 const validateBlogDescription =  body("description").trim().isString().notEmpty().isLength({min: 0, max: 500});
 const validateBlogUrl = body("websiteUrl").isString().notEmpty().isURL().isLength({min: 10, max: 100});
 
-export const validationBlogsChains =()=> [validateBlogName,validateBlogDescription,validateBlogUrl]
+export const validationBlogsChains =()=> [validateBlogName,validateBlogDescription,validateBlogUrl];

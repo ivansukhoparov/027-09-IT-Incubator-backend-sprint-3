@@ -8,49 +8,49 @@ import {injectable} from "inversify";
 @injectable()
 export class BlogsRepository {
 
-    // return all blogs from database
-    async getAllBlogs() {
-        const blogs: WithId<BlogType>[] = await BlogModel.find({}).lean();
-        return blogs.map(blogMapper)
-    };
+	// return all blogs from database
+	async getAllBlogs() {
+		const blogs: WithId<BlogType>[] = await BlogModel.find({}).lean();
+		return blogs.map(blogMapper);
+	}
 
-    // return one blog by id
-    async getBlogById(id: string) {
-        try {
-            return await BlogModel.findOne({_id: new ObjectId(id)});
-        } catch (err) {
-            return null;
-        }
-    }
+	// return one blog by id
+	async getBlogById(id: string) {
+		try {
+			return await BlogModel.findOne({_id: new ObjectId(id)});
+		} catch (err) {
+			return null;
+		}
+	}
 
-    // create new blog
-    async createBlog(newBlog: BlogType) {
-        const result = await BlogModel.create(newBlog)
-        return result._id.toString();
-    }
+	// create new blog
+	async createBlog(newBlog: BlogType) {
+		const result = await BlogModel.create(newBlog);
+		return result._id.toString();
+	}
 
-    // update existing blog
-    async updateBlog(id: string, updateData: UpdateBlogDto) {
+	// update existing blog
+	async updateBlog(id: string, updateData: UpdateBlogDto) {
 
-        const result = await BlogModel.updateOne({_id: new ObjectId(id)},
-            {
-                $set:
+		const result = await BlogModel.updateOne({_id: new ObjectId(id)},
+			{
+				$set:
                 updateData
-            }
-        )
-        return result.matchedCount === 1;
-    }
+			}
+		);
+		return result.matchedCount === 1;
+	}
 
-    //delete blog
-    async deleteBlog(id: string) {
-        try {
-            const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
+	//delete blog
+	async deleteBlog(id: string) {
+		try {
+			const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
 
-            return result.deletedCount === 1;
-        } catch (err) {
-            return false;
-        }
-    }
+			return result.deletedCount === 1;
+		} catch (err) {
+			return false;
+		}
+	}
 }
 
 

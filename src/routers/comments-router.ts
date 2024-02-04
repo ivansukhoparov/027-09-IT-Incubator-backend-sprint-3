@@ -17,13 +17,13 @@ const commentsControllerInstance = container.resolve<CommentsController>(Comment
 commentsRouter.get("/:id", commentsControllerInstance.getComments.bind(commentsControllerInstance));
 
 commentsRouter.put("/:id",
-    AuthorizationMiddleware,
-    accessRight,
-    validateComment,
-    inputValidationMiddleware,
-    commentsControllerInstance.updateComment.bind(commentsControllerInstance));
+	AuthorizationMiddleware,
+	accessRight,
+	validateComment,
+	inputValidationMiddleware,
+	commentsControllerInstance.updateComment.bind(commentsControllerInstance));
 
 commentsRouter.delete("/:id",
-    AuthorizationMiddleware,
-    accessRight,
-    commentsControllerInstance.deleteComment.bind(commentsControllerInstance));
+	AuthorizationMiddleware,
+	accessRight,
+	commentsControllerInstance.deleteComment.bind(commentsControllerInstance));

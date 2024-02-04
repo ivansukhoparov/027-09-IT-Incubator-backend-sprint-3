@@ -6,12 +6,12 @@ import {body} from "express-validator";
 
 const postsQueryRepository = new PostsQueryRepository();
 export const validatePost = async (req: RequestWithParams<Params>, res:Response, next:NextFunction)=>{
-    const post = await postsQueryRepository.getPostById(req.params.id);
-    if (!post) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return;
-    }
-    next();
+	const post = await postsQueryRepository.getPostById(req.params.id);
+	if (!post) {
+		res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		return;
+	}
+	next();
 };
 
 export const validateComment = body("content").isString().trim().notEmpty().isLength({min:20,max:300});

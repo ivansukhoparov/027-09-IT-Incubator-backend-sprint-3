@@ -10,11 +10,11 @@ export const usersRouter = Router();
 const userController = container.resolve<UsersController>(UsersController);
 
 
-usersRouter.get("/", userController.getUsers.bind(userController))
+usersRouter.get("/", userController.getUsers.bind(userController));
 
 usersRouter.post("/", AuthorizationMiddleware,
-    usersValidationChain(),
-    inputValidationMiddleware,
-    userController.createUser.bind(userController))
+	usersValidationChain(),
+	inputValidationMiddleware,
+	userController.createUser.bind(userController));
 
-usersRouter.delete("/:id",AuthorizationMiddleware, userController.deleteUser.bind(userController))
+usersRouter.delete("/:id",AuthorizationMiddleware, userController.deleteUser.bind(userController));

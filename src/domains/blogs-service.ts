@@ -10,36 +10,36 @@ import {injectable} from "inversify";
 
 @injectable()
 export class BlogsService {
-        constructor(protected blogRepository: BlogsRepository) {
-    }
+	constructor(protected blogRepository: BlogsRepository) {
+	}
 
-     async createNewBlog(createData:CreateBlogDto){
-        const createdAt = new Date();
-        const newBlogData: BlogType = {
-            name: createData.name,
-            description: createData.description,
-            websiteUrl: createData.websiteUrl,
-            createdAt: createdAt.toISOString(),
-            isMembership: false
-        }
+	async createNewBlog(createData:CreateBlogDto){
+		const createdAt = new Date();
+		const newBlogData: BlogType = {
+			name: createData.name,
+			description: createData.description,
+			websiteUrl: createData.websiteUrl,
+			createdAt: createdAt.toISOString(),
+			isMembership: false
+		};
 
-        const blogID =  await     this.blogRepository.createBlog(newBlogData)
-        const newBlog:WithId<BlogType>|null = await      this.blogRepository.getBlogById(blogID);
+		const blogID =  await     this.blogRepository.createBlog(newBlogData);
+		const newBlog:WithId<BlogType>|null = await      this.blogRepository.getBlogById(blogID);
 
-        if (!newBlog) return null
+		if (!newBlog) return null;
 
-        return blogMapper(newBlog)
-    }
+		return blogMapper(newBlog);
+	}
 
 
 
-     async updateBlog(id:string, data:UpdateBlogDto){
-        const updateData = {
-            name: data.name,
-            description: data.description,
-            websiteUrl: data.websiteUrl
-        }
-        return await this.blogRepository.updateBlog(id,updateData);
-    }
+	async updateBlog(id:string, data:UpdateBlogDto){
+		const updateData = {
+			name: data.name,
+			description: data.description,
+			websiteUrl: data.websiteUrl
+		};
+		return await this.blogRepository.updateBlog(id,updateData);
+	}
 }
 

@@ -7,12 +7,12 @@ import {SecurityService} from "../domains/security-service";
 import {SecurityController} from "./controllers/security-controller";
 import {container} from "../composition-root";
 
-export const securityRouter = Router()
+export const securityRouter = Router();
 
 const securityControllerInstance = container.resolve<SecurityController>(SecurityController);
 
-securityRouter.get("/devices", securityControllerInstance.getDevices.bind(securityControllerInstance))
+securityRouter.get("/devices", securityControllerInstance.getDevices.bind(securityControllerInstance));
 
-securityRouter.delete("/devices/:id", securityControllerInstance.terminateDevice.bind(securityControllerInstance))
+securityRouter.delete("/devices/:id", securityControllerInstance.terminateDevice.bind(securityControllerInstance));
 
-securityRouter.delete("/devices", securityControllerInstance.terminateAllDevices.bind(securityControllerInstance))
+securityRouter.delete("/devices", securityControllerInstance.terminateAllDevices.bind(securityControllerInstance));

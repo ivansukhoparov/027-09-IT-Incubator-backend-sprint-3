@@ -1,18 +1,18 @@
 import {Router, Request, Response} from "express";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {
-    Params,
-    RequestWithBody,
-    RequestWithBodyAndParams,
-    RequestWithParams,
-    RequestWithSearchTerms, RequestWithSearchTermsAndParams
+	Params,
+	RequestWithBody,
+	RequestWithBodyAndParams,
+	RequestWithParams,
+	RequestWithSearchTerms, RequestWithSearchTermsAndParams
 } from "../types/common";
 import {
-    CreateBlogDto,
-    QueryBlogRequestType,
-    SearchBlogRepositoryType,
-    SortBlogRepositoryType,
-    UpdateBlogDto
+	CreateBlogDto,
+	QueryBlogRequestType,
+	SearchBlogRepositoryType,
+	SortBlogRepositoryType,
+	UpdateBlogDto
 } from "../types/blogs/input";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {validationBlogsChains} from "../middlewares/validators/blogs-validators";
@@ -38,24 +38,24 @@ blogsRouter.get("/:id", blogController.getBlogById.bind(blogController));
 
 blogsRouter.get("/:id/posts", blogController.getAllPosts.bind(blogController));
 
-blogsRouter.post('/',
-    AuthorizationMiddleware,
-    validationBlogsChains(),
-    inputValidationMiddleware,
-    blogController.createBlog.bind(blogController));
+blogsRouter.post("/",
+	AuthorizationMiddleware,
+	validationBlogsChains(),
+	inputValidationMiddleware,
+	blogController.createBlog.bind(blogController));
 
 blogsRouter.post("/:id/posts",
-    AuthorizationMiddleware,
-    validationPostsChainsNoBlogId(),
-    inputValidationMiddleware,
-    blogController.createPost.bind(blogController));
+	AuthorizationMiddleware,
+	validationPostsChainsNoBlogId(),
+	inputValidationMiddleware,
+	blogController.createPost.bind(blogController));
 
 blogsRouter.put("/:id",
-    AuthorizationMiddleware,
-    validationBlogsChains(),
-    inputValidationMiddleware,
-    blogController.updateBlog.bind(blogController));
+	AuthorizationMiddleware,
+	validationBlogsChains(),
+	inputValidationMiddleware,
+	blogController.updateBlog.bind(blogController));
 
 blogsRouter.delete("/:id",
-    AuthorizationMiddleware,
-    blogController.deleteBlog.bind(blogController));
+	AuthorizationMiddleware,
+	blogController.deleteBlog.bind(blogController));
