@@ -1,9 +1,10 @@
 import {SearchUsersRepositoryType, SortUsersRepositoryType} from "../../types/users/input";
 import {usersCollection} from "../../db/mongo/mongo-collections";
-import {WithId} from "mongodb";
-import {UserType} from "../../types/users/output";
+import {ObjectId, WithId} from "mongodb";
+import {UserOutputType, UserType} from "../../types/users/output";
 import {userMapper} from "../../types/users/mapper";
 import {injectable} from "inversify";
+import {ERRORS} from "../../utils/errors-handler";
 
 @injectable()
 export class UsersQueryRepository {
@@ -50,5 +51,11 @@ export class UsersQueryRepository {
             totalCount: documentsTotalCount,
             items: users.map(userMapper)
         }
+    }
+
+    async getUserById(id: string): Promise<UserOutputType> {
+            const user = await usersCollection.findOne({_id: new ObjectId(id)});
+            if (!user) throw new Error(ERRORS.NOT_FOUND_404);
+            return userMapper(user);
     }
 }

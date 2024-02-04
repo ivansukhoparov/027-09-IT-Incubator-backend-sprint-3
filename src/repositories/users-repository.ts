@@ -4,6 +4,7 @@ import {usersCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {userMapper, userMapperAuth} from "../types/users/mapper";
 import {injectable} from "inversify";
+import {ERRORS} from "../utils/errors-handler";
 
 @injectable()
 export class UsersRepository {
@@ -69,21 +70,14 @@ export class UsersRepository {
         }
     }
 
-    async createUser(createData: UserType): Promise<string | null> {
-        try {
+    async createUser(createData: UserType): Promise<string> {
             const result = await usersCollection.insertOne(createData);
             return result.insertedId.toString();
-        } catch (err) {
-            return null
-        }
     }
 
     async deleteUser(id: string) {
-        try {
             const result = await usersCollection.deleteOne({_id: new ObjectId(id)});
-            return result.deletedCount === 1;
-        } catch (err) {
-            return false
-        }
+            if (result.deletedCount !== 1) throw new Error(ERRORS.NOT_FOUND_404);
     }
+
 }
