@@ -7,11 +7,7 @@ export const newError = (message: string) => {
 	return err;
 };
 export const errorsHandler = (res: Response, err: any) => {
-	if (err.message === ERRORS.NOT_FOUND_404) {
-		res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-	} else {
-		res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
-	}
+	res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 };
 export const ERRORS = {
 	NOT_FOUND_404: "not_found",

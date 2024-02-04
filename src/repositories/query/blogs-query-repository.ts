@@ -8,6 +8,7 @@ import {BlogModel} from "../../db/mongoose/models";
 import {injectable} from "inversify";
 import {QuerySearchType, QuerySortType} from "../../types/common";
 import {SORT} from "../../utils/comon";
+import {ERRORS} from "../../utils/errors-handler";
 
 @injectable()
 export class BlogsQueryRepository {
@@ -39,16 +40,10 @@ export class BlogsQueryRepository {
 		};
 	}
 
-	async getBlogById(id: string): Promise<BlogOutputType | null> {
-		try {
-			const blog: WithId<BlogType> | null = await BlogModel.findOne({_id: new ObjectId(id)});
-			if (!blog) {
-				return null;
-			}
-			return blogMapper(blog);
-		} catch (err) {
-			return null;
-		}
+	async getBlogById(id: string): Promise<BlogOutputType> {
+		const blog: WithId<BlogType>|null= await BlogModel.findOne({_id: new ObjectId(id)});
+		if (!blog) throw new Error(ERRORS.NOT_FOUND_404);
+		return blogMapper(blog);
 	}
 }
 
