@@ -21,3 +21,8 @@ export const AUTH_METHODS={
 	base: "Basic",
 	bearer: "Bearer"
 };
+
+export const SORT ={
+	asc: 1,
+	desc: -1
+};

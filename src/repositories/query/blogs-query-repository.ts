@@ -6,14 +6,14 @@ import {blogCollection} from "../../db/mongo/mongo-collections";
 import {ViewModelType} from "../../types/view-model";
 import {BlogModel} from "../../db/mongoose/models";
 import {injectable} from "inversify";
+import {QuerySearchType, QuerySortType} from "../../types/common";
+import {SORT} from "../../utils/comon";
 
 @injectable()
 export class BlogsQueryRepository {
 
-	async getAllBlogs(sortData: SortBlogRepositoryType, searchData: SearchBlogRepositoryType): Promise<ViewModelType<BlogOutputType>> {
+	async getAllBlogs(sortData: QuerySortType, searchData: QuerySearchType): Promise<ViewModelType<BlogOutputType>> {
 		let searchKey = {};
-		//    let sortKey = {};
-		//    let sortDirection: number;
 
 		// check if have searchNameTerm create search key
 		if (searchData.searchNameTerm) searchKey = {name: {$regex: searchData.searchNameTerm, $options: "i"}};
@@ -23,21 +23,9 @@ export class BlogsQueryRepository {
 		const pageCount = Math.ceil(documentsTotalCount / +sortData.pageSize); // Calculate total pages count according to page size
 		const skippedDocuments = (+sortData.pageNumber - 1) * +sortData.pageSize; // Calculate count of skipped docs before requested page
 
-		// check if sortDirection is "desc" assign sortDirection value -1, else assign 1
-		//    if (sortData.sortDirection === "desc") sortDirection = -1;
-		//    else sortDirection = 1;
-
-		// check if have fields exists assign the same one else assign "createdAt" value
-		/*   if (sortData.sortBy === "description") sortKey = {description: sortDirection};
-        else if (sortData.sortBy === "websiteUrl") sortKey = {websiteUrl: sortDirection};
-        else if (sortData.sortBy === "name") sortKey = {name: sortDirection};
-        else if (sortData.sortBy === "isMembership") sortKey = {isMembership: sortDirection};
-        else sortKey = {createdAt: sortDirection};
-    */
-
 		// Get documents from DB
 		const blogs: WithId<BlogType>[] = await BlogModel.find(searchKey)
-			.sort(sortData.sortBy+" "+sortData.sortDirection)
+			.sort(sortData.sortBy+" "+SORT[sortData.sortDirection])
 			.skip(+skippedDocuments)
 			.limit(+sortData.pageSize)
 			.lean();

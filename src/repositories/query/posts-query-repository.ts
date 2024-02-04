@@ -6,18 +6,16 @@ import {ObjectId, WithId} from "mongodb";
 import {ViewModelType} from "../../types/view-model";
 import {PostModel} from "../../db/mongoose/models";
 import {injectable} from "inversify";
+import {QuerySortType} from "../../types/common";
+import {SORT} from "../../utils/comon";
 
 @injectable()
 export class PostsQueryRepository {
 
 	// return all posts from database
-	async getAllPosts(sortData: SortPostRepositoryType, blogId?: string): Promise<ViewModelType<PostOutputType>> {
+	async getAllPosts(sortData: QuerySortType, blogId?: string): Promise<ViewModelType<PostOutputType>> {
 
 		let searchKey = {};
-		const sortDirection = {
-			desc: -1,
-			asc: 1
-		};
 
 		if (blogId) searchKey = {blogId: blogId};
 
@@ -26,11 +24,11 @@ export class PostsQueryRepository {
 		const pageCount = Math.ceil(documentsTotalCount / +sortData.pageSize); // Calculate total pages count according to page size
 		const skippedDocuments = (+sortData.pageNumber - 1) * +sortData.pageSize;
 
-		const sortBy: PostSortType = sortData.sortBy ? sortData.sortBy : "createdAt";
+		const sortBy = sortData.sortBy;
 
 		// Get documents from DB
 		const posts: WithId<PostDtoType>[] = await PostModel.find(searchKey)
-			.sort(sortBy + " " + sortDirection[sortData.sortDirection])
+			.sort(sortBy + " " + SORT[sortData.sortDirection])
 			.skip(+skippedDocuments)
 			.limit(+sortData.pageSize)
 			.lean();

@@ -10,7 +10,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class BlogsService {
-	constructor(protected blogRepository: BlogsRepository) {
+	constructor(protected blogsRepository: BlogsRepository) {
 	}
 
 	async createNewBlog(createData:CreateBlogDto){
@@ -22,24 +22,21 @@ export class BlogsService {
 			createdAt: createdAt.toISOString(),
 			isMembership: false
 		};
-
-		const blogID =  await     this.blogRepository.createBlog(newBlogData);
-		const newBlog:WithId<BlogType>|null = await      this.blogRepository.getBlogById(blogID);
-
-		if (!newBlog) return null;
-
-		return blogMapper(newBlog);
+		const blogID =  await this.blogsRepository.createBlog(newBlogData);
+		return blogID;
 	}
 
-
-
-	async updateBlog(id:string, data:UpdateBlogDto){
+	async updateBlog(blogId:string, data:UpdateBlogDto){
 		const updateData = {
 			name: data.name,
 			description: data.description,
 			websiteUrl: data.websiteUrl
 		};
-		return await this.blogRepository.updateBlog(id,updateData);
+		return await this.blogsRepository.updateBlog(blogId,updateData);
+	}
+
+	async deleteBlog(blogId:string){
+		await this.blogsRepository.deleteBlog(blogId);
 	}
 }
 

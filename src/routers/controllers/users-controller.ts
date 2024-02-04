@@ -1,7 +1,14 @@
 import {UserService} from "../../domains/user-service";
 import {UsersQueryRepository} from "../../repositories/query/users-query-repository";
 import {UsersRepository} from "../../repositories/users-repository";
-import {Params, RequestWithBody, RequestWithParams, RequestWithSearchTerms} from "../../types/common";
+import {
+	Params,
+	QuerySearchType,
+	QuerySortType,
+	RequestWithBody,
+	RequestWithParams,
+	RequestWithSearchTerms
+} from "../../types/common";
 import {CreateUserType, QueryUsersRequestType} from "../../types/users/input";
 import {Response} from "express";
 import {UserOutputType} from "../../types/users/output";

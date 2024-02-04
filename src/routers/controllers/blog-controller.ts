@@ -22,6 +22,10 @@ import {BlogsService} from "../../domains/blogs-service";
 import {PostsService} from "../../domains/posts-service";
 import {BlogsRepository} from "../../repositories/blogs-repository";
 import {inject, injectable} from "inversify";
+import {createQuery} from "./utils/create-query";
+import {ViewModelType} from "../../types/view-model";
+import {UserOutputType} from "../../types/users/output";
+import {errorsHandler} from "../../utils/errors-handler";
 
 
 @injectable()
@@ -35,90 +39,69 @@ export class BlogController {
                  @inject(BlogsRepository)    protected blogsRepository: BlogsRepository) {}
 
 	async getAllBlogs(req: RequestWithSearchTerms<QueryBlogRequestType>, res: Response) {
-
-		const sortData: SortBlogRepositoryType = {
-			sortBy: req.query.sortBy || "createdAt",
-			sortDirection: req.query.sortDirection === "asc" ? 1 : -1,
-			pageNumber: req.query.pageNumber || 1,
-			pageSize: req.query.pageSize || 10
-		};
-		const searchData: SearchBlogRepositoryType = {
-			searchNameTerm: req.query.searchNameTerm || null
-		};
-
-		const blogs = await this.blogsQueryRepository.getAllBlogs(sortData, searchData);
-		if (!blogs) {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-			return;
+		try {
+			const {sortData, searchData} = createQuery(req.query);
+			const blogs = await this.blogsQueryRepository.getAllBlogs(sortData, searchData);
+			res.status(HTTP_STATUSES.OK_200).json(blogs);
+		}catch (err) {
+			errorsHandler(res, err);
 		}
-		res.status(HTTP_STATUSES.OK_200).json(blogs);
 	}
 
 	async getBlogById(req: RequestWithParams<Params>, res: Response) {
-		const blog = await this.blogsQueryRepository.getBlogById(req.params.id);
-		if (blog) {
+		try {
+			const blog = await this.blogsQueryRepository.getBlogById(req.params.id);
 			res.status(HTTP_STATUSES.OK_200).json(blog);
-			return;
-		} else {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		}catch (err) {
+			errorsHandler(res, err);
 		}
 	}
 
 	async getAllPosts(req: RequestWithSearchTermsAndParams<Params, QueryPostRequestType>, res: Response) {
-
-		const sortData: SortPostRepositoryType = {
-			sortBy: req.query.sortBy || "createdAt",
-			sortDirection: req.query.sortDirection || "desc",
-			pageNumber: req.query.pageNumber || 1,
-			pageSize: req.query.pageSize || 10
-		};
-
-		const posts = await this.postsQueryRepository.getAllPosts(sortData, req.params.id,);
-		if (posts.items.length < 1) {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-			return;
+		try {
+			const {sortData} = createQuery(req.query);
+			const posts = await this.postsQueryRepository.getAllPosts(sortData, req.params.id,);
+			res.status(HTTP_STATUSES.OK_200).json(posts);
+		}catch (err) {
+			errorsHandler(res, err);
 		}
-		res.status(HTTP_STATUSES.OK_200).json(posts);
 	}
 
 	async createBlog(req: RequestWithBody<CreateBlogDto>, res: Response) {
-		const creatData = req.body;
-
-		const newBlog = await this.blogsService.createNewBlog(creatData);
-		if (newBlog) {
+		try{
+			const newBlogId = await this.blogsService.createNewBlog(req.body);
+			const newBlog = await this.blogsQueryRepository.getBlogById(newBlogId);
 			res.status(HTTP_STATUSES.CREATED_201).json(newBlog);
-			return;
+		}catch (err){
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 		}
-		res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 	}
 
 	async createPost(req: RequestWithBodyAndParams<Params, PostReqBodyCreateType>, res: Response) {
-
-		const blogId = req.params.id;
-		const createData = req.body;
-
-		const createdPost = await this.postService.createNewPost(createData, blogId);
-
-		if (!createdPost) {
+		try{
+			const createdPostId = await this.postService.createNewPost(req.body, req.params.id); // CHANGE AFTER POSTS REFACTORING
+			const createdPost = await this.postsQueryRepository.getPostById(createdPostId.id);
+			res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
+		}catch (err){
 			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-			return;
 		}
-		res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
 	}
 
 	async updateBlog(req: RequestWithBodyAndParams<Params, UpdateBlogDto>, res: Response) {
-		const updateData = req.body;
-		const isUpdated = await this.blogsService.updateBlog(req.params.id, updateData);
-		if (isUpdated) {
+		try{
+			await this.blogsService.updateBlog(req.params.id, req.body);
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-			return;
+		}catch (err){
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 		}
-		res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 	}
 
 	async deleteBlog(req: RequestWithParams<Params>, res: Response) {
-		const isDeleted = await this.blogsRepository.deleteBlog(req.params.id);
-		if (isDeleted) res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-		else res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		try{
+			await this.blogsService.deleteBlog(req.params.id);
+			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+		}catch (err){
+			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		}
 	}
 }

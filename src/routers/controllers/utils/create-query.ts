@@ -1,20 +1,19 @@
-import {QueryUsersRequestType, SearchUsersRepositoryType, SortUsersRepositoryType} from "../../../types/users/input";
 
-export const createQuery = (query: QueryUsersRequestType) => {
+import {QueryRequestType, QuerySearchType, QuerySortType} from "../../../types/common";
 
-	const sortData: SortUsersRepositoryType = {
+export const createQuery = (query: QueryRequestType):{sortData:QuerySortType, searchData:QuerySearchType} => {
+	const searchData: QuerySearchType = {};
+	const sortData: QuerySortType = {
 		sortBy: query.sortBy || "createdAt",
 		sortDirection: query.sortDirection || "desc",
 		pageNumber: query.pageNumber || 1,
 		pageSize: query.pageSize || 10
 	};
 
-	const searchData: SearchUsersRepositoryType = {
-		searchLoginTerm: query.searchLoginTerm || null,
-		searchEmailTerm: query.searchEmailTerm || null
-	};
+	if (query.searchLoginTerm) searchData.searchLoginTerm = query.searchLoginTerm;
+	if (query.searchEmailTerm) searchData.searchEmailTerm = query.searchEmailTerm;
+	if (query.searchNameTerm) searchData.searchNameTerm = query.searchNameTerm;
 
 	return {sortData, searchData};
 };
 
-// searchNameTerm: req.query.searchNameTerm || null

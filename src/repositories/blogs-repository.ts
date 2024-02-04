@@ -4,6 +4,7 @@ import {ObjectId, WithId} from "mongodb";
 import {blogMapper} from "../types/blogs/mapper";
 import {BlogModel} from "../db/mongoose/models";
 import {injectable} from "inversify";
+import {ERRORS} from "../utils/errors-handler";
 
 @injectable()
 export class BlogsRepository {
@@ -43,13 +44,8 @@ export class BlogsRepository {
 
 	//delete blog
 	async deleteBlog(id: string) {
-		try {
-			const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
-
-			return result.deletedCount === 1;
-		} catch (err) {
-			return false;
-		}
+		const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
+		if (result.deletedCount !== 1) throw new Error(ERRORS.NOT_FOUND_404);
 	}
 }
 
