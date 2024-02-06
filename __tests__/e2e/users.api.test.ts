@@ -4,9 +4,11 @@ import {app} from "../../src/app";
 import {HTTP_STATUSES} from "../../src/utils/comon";
 import {UserOutputType} from "../../src/types/users/output";
 import {settings} from "../../src/settings";
-import {createUserData, ViewModelResponse} from "./data-sets/users-dataset";
+import {createUserData, onlySpaces, ViewModelResponse} from "./data-sets/users-dataset";
 
-const routerName = "/users/";
+import {testingUserCreate} from "./utils/testing-user-create";
+
+const routerName = "/createUsers/";
 
 let user: UserOutputType;
 
@@ -39,10 +41,8 @@ describe(routerName, () => {
 			.send(createUserData.empty.data)
 			.expect(HTTP_STATUSES.BAD_REQUEST_400, createUserData.empty.errors);
 	});
-	it(" - POST doesn't create new user with spaces", async () => {
-		await request(app).post(routerName).auth("admin", "qwerty")
-			.send(createUserData.onlySpaces.data)
-			.expect(HTTP_STATUSES.BAD_REQUEST_400, createUserData.onlySpaces.errors);
+	it(" changed - POST doesn't create new user with spaces", async () => {
+		await testingUserCreate(onlySpaces);
 	});
 	it(" - POST doesn't create new user with over length data", async () => {
 		await request(app).post(routerName)
@@ -62,10 +62,10 @@ describe(routerName, () => {
 			.expect(HTTP_STATUSES.BAD_REQUEST_400, createUserData.invalidEmail.errors);
 	});
 	it(" + POST should create user with valid data and return created user", async () => {
-		// const res = await request(app).post(routerName).auth("admin", "qwerty")
-		// 	.send(createUserData.valid.data)
-		// 	.expect(HTTP_STATUSES.CREATED_201);
-		// user = res.body;
+		const res = await request(app).post(routerName).auth("admin", "qwerty")
+			.send(createUserData.valid.data)
+			.expect(HTTP_STATUSES.CREATED_201);
+		user = res.body;
 	});
 
 	it(" + GET should return all user ", async () => {

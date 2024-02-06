@@ -98,7 +98,7 @@ describe(routerName, () => {
 		await mongoose.connect(mongoURI); // Connecting to the database.
 		// Delete add data before tests
 		await request(app).delete("/testing/all-data");
-		// create users for tests
+		// create createUsers for tests
 		for (let i = 0; i < createTestUsers.length; i++) {
 			// Create user
 			const createdUser = await request(app).post("/users/")
