@@ -4,6 +4,7 @@ import {BlogOutputType} from "../../../src/types/blogs/output";
 
 
 export const createBlogs = async (numberOfBlogs: number) => {
+
 	const blogs:BlogOutputType[] = [];
 	for (let i = 1; i <= numberOfBlogs; i++) {
 		const createBlogData = {
@@ -14,7 +15,17 @@ export const createBlogs = async (numberOfBlogs: number) => {
 		const res = await request(app).post("/blogs/")
 			.auth("admin", "qwerty")
 			.send(createBlogData);
+
 		blogs.push(res.body);
 	}
 	return blogs;
+};
+
+export const createBlogsWithData = async (createBlogData:any) => {
+
+	const res = await request(app).post("/blogs/")
+		.auth("admin", "qwerty")
+		.send(createBlogData);
+
+	return res.body;
 };
