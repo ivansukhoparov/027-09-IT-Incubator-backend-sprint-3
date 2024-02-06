@@ -12,7 +12,8 @@ export const createBlogs = async (numberOfBlogs: number) => {
 			description: "some valid description",
 			websiteUrl: "http://www.validurl.com"
 		};
-		const res = await request(app).post("/blogs/")
+		const res = await request(app)
+			.post("/blogs/")
 			.auth("admin", "qwerty")
 			.send(createBlogData);
 

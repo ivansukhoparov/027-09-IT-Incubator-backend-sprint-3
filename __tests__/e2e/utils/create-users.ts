@@ -12,7 +12,10 @@ export const createUsers = async (numberOfUsers: number) => {
 			email: "user" + i + "@gmail.com",
 			password: "qwerty"
 		};
-		const res = await request(app).post("/users/").auth("admin", "qwerty").send(createUserData);
+		const res = await request(app)
+			.post("/users/")
+			.auth("admin", "qwerty")
+			.send(createUserData);
 
 		users.push(res.body);
 	}
