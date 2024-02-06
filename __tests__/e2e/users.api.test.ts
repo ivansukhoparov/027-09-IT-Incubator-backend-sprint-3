@@ -8,7 +8,7 @@ import {createUserData, onlySpaces, ViewModelResponse} from "./data-sets/users-d
 
 import {testingUserCreate} from "./utils/testing-user-create";
 
-const routerName = "/createUsers/";
+const routerName = "/users/";
 
 let user: UserOutputType;
 

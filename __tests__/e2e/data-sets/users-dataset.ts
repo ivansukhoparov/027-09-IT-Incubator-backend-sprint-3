@@ -1,3 +1,14 @@
+import {HTTP_STATUSES} from "../../../src/utils/comon";
+export class ViewModelResponse {
+	static emptyBody = {
+		pagesCount: 0,
+		page: 1,
+		pageSize: 10,
+		totalCount: 0,
+		items: []
+	};
+}
+
 export class createUserData {
 
 	static valid = {
@@ -69,13 +80,24 @@ export class createUserData {
 	}
 
 }
-
-export class ViewModelResponse {
-	static emptyBody = {
-		pagesCount: 0,
-		page: 1,
-		pageSize: 10,
-		totalCount: 0,
-		items: []
-	};
+function errorsResponse(fields: string[]) {
+	const response: { errorsMessages: Object[] } = {errorsMessages: []};
+	fields.forEach(f => {
+		response.errorsMessages.push({message: "Invalid value", field: f});
+	});
+	return response;
 }
+
+
+
+export const onlySpaces = {
+	req: {
+		login: "        ",
+		email: "     ",
+		password: "       "
+	},
+	res: errorsResponse(["login", "email", "password"]),
+	resCode: HTTP_STATUSES.BAD_REQUEST_400
+};
+
+
