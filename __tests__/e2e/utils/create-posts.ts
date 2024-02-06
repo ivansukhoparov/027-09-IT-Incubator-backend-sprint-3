@@ -2,7 +2,8 @@ import request from "supertest";
 import {app} from "../../../src/app";
 import {PostOutputType} from "../../../src/types/posts/output";
 
-export const createBlogs = async (numberOfBlogs: number, blogId:string) => {
+export const createPost = async (numberOfBlogs: number, blogId:string) => {
+
 	const posts :PostOutputType[]=[];
 	for (let i = 1; i <= numberOfBlogs; i++) {
 		const createPostData = {
@@ -11,7 +12,21 @@ export const createBlogs = async (numberOfBlogs: number, blogId:string) => {
 			content: "some_valid_content",
 			blogId: blogId
 		};
-		const res = await request(app).post("posts")	.auth("admin", "qwerty")	.send(createPostData	)	.expect(201);
+		const res = await request(app)
+			.post("posts")
+			.auth("admin", "qwerty")
+			.send(createPostData	);
+
 		posts.push(res.body);
 	}
+	return posts;
+};
+
+export const createPostWithData = async (createPostData:any) => {
+
+	const res = await request(app).post("posts")
+		.auth("admin", "qwerty")
+		.send(createPostData	);
+
+	return res.body;
 };
