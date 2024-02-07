@@ -59,8 +59,6 @@ describe(routerName, () => {
 	});
 
 	it(" + POST should create user with valid data and return created user", async () => {
-		await mongoose.connect(mongoURI); // Connecting to the database.
-		await request(app).delete("/testing/all-data");
 		await testingUserCreate(testUserData.valid);
 	});
 
