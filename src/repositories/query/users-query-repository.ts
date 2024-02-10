@@ -23,7 +23,7 @@ export class UsersQueryRepository {
 		if (searchKeysArray.length === 0) {
 			searchKey = {};
 		} else if (searchKeysArray.length === 1) {
-			searchKey = searchKeysArray;
+			searchKey = searchKeysArray[0];
 		}else if (searchKeysArray.length > 1) {
 			searchKey = {$or: searchKeysArray};
 		}
