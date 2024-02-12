@@ -13,19 +13,28 @@ const entitiesFactory = {
 			password: "qwerty"
 		};
 	},
-	"blogs": (i: number, entityName: string = "user") => {
+	"blogs": (i: number, entityName: string = "blog") => {
 		return {
-			login: entityName + "_" + i,
-			email: entityName + i + "@gmail.com",
-			password: "qwerty"
+			name: entityName + "_" + i,
+			description: "some valid description for " + entityName + "_" + i,
+			websiteUrl: "http://www." + entityName + "inweb.com"
 		};
 	},
-	"posts": (i: number, entityName: string = "user") => {
-		return {
-			login: entityName + "_" + i,
-			email: entityName + i + "@gmail.com",
-			password: "qwerty"
-		};
+	"posts": (i: number, entityName: string = "post", parentId?: string,) => {
+		if (parentId) {
+			return {
+				title: entityName + "_" + i + "_title",
+				shortDescription: "a very short description for " + entityName + "_" + i,
+				content: "some valid content for " + entityName + "_" + i,
+				blogId: parentId!
+			};
+		} else {
+			return {
+				title: entityName + "_" + i + "_title",
+				shortDescription: "a very short description for " + entityName + "_" + i,
+				content: "some valid content for " + entityName + "_" + i,
+			};
+		}
 	},
 	"comments": (i: number, entityName: string = "user") => {
 		return {
@@ -50,12 +59,15 @@ export class CreateEntity {
 		this.entityType = EntityType;
 	}
 
-	async create(numberOfEntities: number, entityName?: string) {
+	async create(numberOfEntities: number, entityName?: string, parentId?: string) {
 		const entities: any[] = [];
+
 		for (let i = 1; i <= numberOfEntities; i++) {
 			let createEntityData: any;
-			if (entityName) {
+			if (entityName && !parentId) {
 				createEntityData = entitiesFactory[this.entityType](i,entityName);
+			} else if (entityName && parentId) {
+				createEntityData = entitiesFactory[this.entityType](i, entityName, parentId);
 			} else {
 				createEntityData = entitiesFactory[this.entityType](i);
 			}
@@ -67,6 +79,7 @@ export class CreateEntity {
 			entities.push(res.body);
 
 		}
+
 		return entities;
 	}
 }
