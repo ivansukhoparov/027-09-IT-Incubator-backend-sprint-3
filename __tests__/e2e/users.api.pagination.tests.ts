@@ -219,13 +219,3 @@ describe(routerName, () => {
 			});
 	});
 });
-
-//
-// const UsersPaginationDataSet = {
-// 	test_1: {
-// 		numberOfUsers: 10,
-// 		query: "",
-// 		res: "",
-// 		resCode: HTTP_STATUSES.BAD_REQUEST_400
-// 	}
-// };

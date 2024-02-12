@@ -27,7 +27,7 @@ describe(routerName, () => {
 	});
 
 
-	it("- should return empty model view after delete all", async () => {
+	it("- GET should return empty model view after delete all", async () => {
 		await request(app).get(routerName)
 			.expect(HTTP_STATUSES.OK_200, ViewModelResponse.emptyBody);
 	});
