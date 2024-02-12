@@ -2,7 +2,7 @@ export type CreateCommentDto = {
     content: string
 }
 
-export type CommentLikesType = {
+export type InputCommentLikesType = {
     likeStatus: "None" | "Like" | "Dislike"
 }
 
