@@ -55,11 +55,10 @@ export const AuthorizationMiddleware = async (req: Request, res: Response, next:
 		}
 
 	} else {
-		// в противном случае отправляем ошибку 401
 		res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
 	}
-
 };
+
 
 export const accessRight = async (req:Request, res:Response, next: NextFunction)=>{
 
@@ -72,6 +71,26 @@ export const accessRight = async (req:Request, res:Response, next: NextFunction)
 	if (ownerId !== req.user.id) {
 		res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
 		return;
+	}
+	next();
+};
+
+
+export const softAuthentificationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+
+	const authHeader = req.header("authorization")?.split(" "); // Получаем значение поля в заголовке
+	if (authHeader) {
+		const authMethod = authHeader[0]; // получаем метод из заголовка
+		const authInput = authHeader[1]; // получаем значение для авторизации из заголовка
+		if (authMethod === AUTH_METHODS.bearer) { // If authorisation method is BEARER
+			const userId = await authService.getUserIdByToken(authInput);
+			if (userId) {
+				const user = await usersRepository.getUserById(userId);
+				if (user) {
+					req.user = user;
+				}
+			}
+		}
 	}
 	next();
 };
