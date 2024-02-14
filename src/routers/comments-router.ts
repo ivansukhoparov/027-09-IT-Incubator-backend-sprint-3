@@ -1,6 +1,6 @@
 import {Router} from "express";
-import {accessRight, AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
-import {validateComment} from "../middlewares/validators/comments-validator";
+import {accessRight, softAuthentificationMiddleware, AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
+import {validateComment, validateLike} from "../middlewares/validators/comments-validator";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {CommentsController} from "./controllers/comments-controller";
 import {container} from "../composition-root";
@@ -8,7 +8,7 @@ import {container} from "../composition-root";
 export const commentsRouter = Router();
 const commentsControllerInstance = container.resolve<CommentsController>(CommentsController);
 
-commentsRouter.get("/:id", commentsControllerInstance.getComments.bind(commentsControllerInstance));
+commentsRouter.get("/:id", softAuthentificationMiddleware,commentsControllerInstance.getComments.bind(commentsControllerInstance));
 
 commentsRouter.put("/:id",
 	AuthorizationMiddleware,
@@ -19,10 +19,9 @@ commentsRouter.put("/:id",
 
 commentsRouter.put("/:id/like-status",
 	AuthorizationMiddleware,
-	accessRight,
-	validateComment,
+	validateLike,
 	inputValidationMiddleware,
-	commentsControllerInstance.updateComment.bind(commentsControllerInstance));
+	commentsControllerInstance.updateLikeStatus.bind(commentsControllerInstance));
 
 commentsRouter.delete("/:id",
 	AuthorizationMiddleware,

@@ -16,3 +16,4 @@ export const validatePost = async (req: RequestWithParams<Params>, res:Response,
 
 export const validateComment = body("content").isString().trim().notEmpty().isLength({min:20,max:300});
 
+export const validateLike = body("likeStatus").isString().trim().notEmpty().isIn(["None", "Like","Dislike"]);

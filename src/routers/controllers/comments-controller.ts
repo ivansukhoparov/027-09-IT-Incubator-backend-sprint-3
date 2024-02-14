@@ -2,14 +2,14 @@ import {Params, RequestWithBodyAndParams, RequestWithParams} from "../../types/c
 import {Response} from "express";
 import {CommentsQueryRepository} from "../../repositories/query/comments-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
-import {UpdateCommentDto} from "../../types/comments/input";
+import {InputCommentLikesType, UpdateCommentDto} from "../../types/comments/input";
 import {CommentsService} from "../../domains/comments-service";
 import {CommentsRepository} from "../../repositories/comments-repository";
 import {inject, injectable} from "inversify";
+import {errorsHandler} from "../../utils/errors-handler";
 
 @injectable()
 export class CommentsController {
-
 
 	constructor(@inject(CommentsQueryRepository)    protected commentsQueryRepository: CommentsQueryRepository,
                 @inject(CommentsService)    protected  commentService: CommentsService,
@@ -18,11 +18,19 @@ export class CommentsController {
 	}
 
 	async getComments(req: RequestWithParams<Params>, res: Response) {
-		const comment = await this.commentsQueryRepository.getCommentById(req.params.id);
+
+		let comment;
+		if (req.user) {
+			comment = await this.commentsQueryRepository.getCommentById(req.params.id, req.user.id);
+		} else {
+			comment = await this.commentsQueryRepository.getCommentById(req.params.id);
+		}
+
 		if (!comment) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 			return;
 		}
+
 		res.status(HTTP_STATUSES.OK_200).json(comment);
 	}
 
@@ -40,6 +48,16 @@ export class CommentsController {
 		}
 		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 	}
+
+	async updateLikeStatus(req: RequestWithBodyAndParams<Params, InputCommentLikesType>, res: Response) {
+		try {
+			await this.commentService.updateLike(req.user.id, req.params.id, req.body.likeStatus);
+			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+		} catch (err) {
+			errorsHandler(res, err);
+		}
+	}
+
 
 	async deleteComment(req: RequestWithParams<Params>, res: Response) {
 		const isDeleted = await this.commentsRepository.deleteCommentById(req.params.id);

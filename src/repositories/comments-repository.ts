@@ -1,8 +1,9 @@
-import {CommentType} from "../types/comments/output";
+import {CommentLikeDTO, CommentType} from "../types/comments/output";
 import {commentsCollection} from "../db/mongo/mongo-collections";
 import {ObjectId} from "mongodb";
 import {UpdateCommentDto} from "../types/comments/input";
 import {injectable} from "inversify";
+import {CommentLikeModel, CommentsModel} from "../db/mongoose/models";
 
 @injectable()
 export class CommentsRepository{
@@ -35,6 +36,26 @@ export class CommentsRepository{
 		}catch(err){
 			return false;
 		}
+	}
+
+	async updateCommentLike(updateModel: CommentLikeDTO) {
+
+		const comment = await CommentsModel.findOne({_id: new ObjectId(updateModel.commentId)});
+		if (!comment) throw new Error();
+		const like = await CommentLikeModel.findOne({$and: [{likedUserId: updateModel.likedUserId}, {commentId: updateModel.commentId}]});
+
+		if (like) {
+			like.status = updateModel.status;
+			like.save();
+			// await CommentLikeModel.updateOne({_id: like._id}, {
+			// 	$set: {
+			// 		status: updateModel.status
+			// 	}
+			// });
+		} else {
+			await CommentLikeModel.create(updateModel);
+		}
+
 	}
 }
 
