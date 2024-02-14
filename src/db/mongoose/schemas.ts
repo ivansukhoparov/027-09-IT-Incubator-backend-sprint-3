@@ -1,12 +1,10 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose from "mongoose";
 import {BlogType} from "../../types/blogs/output";
-import {CommentType} from "../../types/comments/output";
+import {CommentLikeDTO, CommentType} from "../../types/comments/output";
 import {PostDtoType} from "../../types/posts/output";
 import {RefreshTokenPayloadType} from "../../types/refresh-token/output";
 import {UserType} from "../../types/users/output";
 import {ApiRequestType, SecuritySessionType} from "../../types/security/output";
-import {dbBlogs} from "../mongo/mongo-collections";
-
 
 export const userSchema = new   mongoose.Schema<UserType>({
 	login: {type:String, required:true},
@@ -43,7 +41,8 @@ export const commentSchema = new mongoose.Schema<CommentType>({
 		userId: {type:String, required:true},
 		userLogin: {type:String, required:true},
 	},
-	createdAt: Date
+	createdAt: Date,
+
 });
 
 export const refreshTokenSchema =new mongoose.Schema<RefreshTokenPayloadType>({
@@ -69,4 +68,10 @@ export const apiRequestSchema= new mongoose.Schema<ApiRequestType>({
 	ip:String,
 	url:String,
 	date:Date,
+});
+
+export const commentLikeSchema = new mongoose.Schema<CommentLikeDTO>({
+	commentId: String,
+	likedUserId: String,
+	status: String,
 });
