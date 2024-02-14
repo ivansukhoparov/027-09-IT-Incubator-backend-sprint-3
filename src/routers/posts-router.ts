@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
+import {softAuthentificationMiddleware, AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
 import {validationPostsChains} from "../middlewares/validators/posts-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {validateComment, validatePost} from "../middlewares/validators/comments-validator";
@@ -15,7 +15,8 @@ const postsController = container.resolve<PostsController>(PostsController);
 postsRouter.get("/",
 	postsController.getPost.bind(postsController));
 
-postsRouter.get("/:id/comments",
+postsRouter.get("/:id/comments", softAuthentificationMiddleware,
+
 	validatePost,
 	postsController.getPostComments.bind(postsController));
 
