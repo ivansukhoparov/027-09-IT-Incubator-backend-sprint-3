@@ -36,19 +36,15 @@ const entitiesFactory = {
 			};
 		}
 	},
-	"comments": (i: number, entityName: string = "user") => {
-		return {
-			login: entityName + "_" + i,
-			email: entityName + i + "@gmail.com",
-			password: "qwerty"
-		};
+	"comments": (i: number, entityName: string = "blog") => {
+		// return {
+		// 	contents:"comment content"
+		// };
 	},
-	"likes": (i: number, entityName: string = "user") => {
-		return {
-			login: entityName + "_" + i,
-			email: entityName + i + "@gmail.com",
-			password: "qwerty"
-		};
+	"likes": (i: number, entityName: string = "blog") => {
+		// return {
+		// 	likeStatus: status
+		// };
 	},
 };
 

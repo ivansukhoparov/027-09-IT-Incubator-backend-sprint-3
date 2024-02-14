@@ -13,7 +13,7 @@ export const createPost = async (numberOfBlogs: number, blogId:string) => {
 			blogId: blogId
 		};
 		const res = await request(app)
-			.post("posts")
+			.post("/posts/")
 			.auth("admin", "qwerty")
 			.send(createPostData	);
 
