@@ -3,8 +3,11 @@ export type CreateCommentDto = {
 }
 
 export type InputCommentLikesType = {
-    likeStatus: "None" | "Like" | "Dislike"
+    likeStatus: LikeStatusType
 }
+
+
+export type LikeStatusType =  "None" | "Like" | "Dislike"
 
 export type CreateCommentDataType = {
 
