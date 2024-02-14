@@ -68,7 +68,7 @@ export class PostsController {
 			pageNumber: +req.query.pageNumber || 1,
 			pageSize: +req.query.pageSize || 10
 		};
-		const comments = await this.commentsQueryRepository.getAllCommentsByPostId(sortData, req.params.id);
+		const comments = await this.commentsQueryRepository.getAllCommentsByPostId(sortData, req.params.id, req.user.id);
 		if (!comments) {
 			res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
 			return;
