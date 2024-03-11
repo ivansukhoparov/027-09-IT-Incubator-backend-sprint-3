@@ -3,7 +3,7 @@ import {
 	apiRequestSchema,
 	blogSchema,
 	commentLikeSchema,
-	commentSchema,
+	commentSchema, postLikeSchema,
 	postSchema,
 	refreshTokenSchema,
 	securitySchema,
@@ -19,5 +19,5 @@ export const RefreshTokenModel = mongoose.model("refreshTokens", refreshTokenSch
 export const ApiRequestModel = mongoose.model("apiRequests", apiRequestSchema);
 export const SecurityModel = mongoose.model("security", securitySchema);
 export const CommentLikeModel = mongoose.model("commentsLikes", commentLikeSchema);
-
+export const PostLikeModel = mongoose.model("postsLikes", postLikeSchema);
 
