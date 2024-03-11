@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import {BlogType} from "../../types/blogs/output";
 import {CommentLikeDTO, CommentType} from "../../types/comments/output";
-import {PostDtoType} from "../../types/posts/output";
+import {PostDtoType, PostLikeDto} from "../../types/posts/output";
 import {RefreshTokenPayloadType} from "../../types/refresh-token/output";
 import {UserType} from "../../types/users/output";
 import {ApiRequestType, SecuritySessionType} from "../../types/security/output";
@@ -73,5 +73,13 @@ export const apiRequestSchema= new mongoose.Schema<ApiRequestType>({
 export const commentLikeSchema = new mongoose.Schema<CommentLikeDTO>({
 	commentId: String,
 	likedUserId: String,
+	status: String,
+});
+
+export const postLikeSchema = new mongoose.Schema<PostLikeDto>({
+	postId: String,
+	likedUserId: String,
+	likedUserName:String,
+	addedAt: String,
 	status: String,
 });
