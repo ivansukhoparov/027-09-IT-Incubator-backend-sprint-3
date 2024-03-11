@@ -6,25 +6,17 @@ import {
 	RequestWithSearchTerms,
 	RequestWithSearchTermsAndParams
 } from "../../types/common";
-import {
-	CreateBlogDto,
-	QueryBlogRequestType,
-	SearchBlogRepositoryType,
-	SortBlogRepositoryType,
-	UpdateBlogDto
-} from "../../types/blogs/input";
+import {CreateBlogDto, QueryBlogRequestType, UpdateBlogDto} from "../../types/blogs/input";
 import {Response} from "express";
 import {BlogsQueryRepository} from "../../repositories/query/blogs-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
-import {PostReqBodyCreateType, QueryPostRequestType, SortPostRepositoryType} from "../../types/posts/input";
+import {PostReqBodyCreateType, QueryPostRequestType} from "../../types/posts/input";
 import {PostsQueryRepository} from "../../repositories/query/posts-query-repository";
 import {BlogsService} from "../../domains/blogs-service";
 import {PostsService} from "../../domains/posts-service";
 import {BlogsRepository} from "../../repositories/blogs-repository";
 import {inject, injectable} from "inversify";
 import {createQuery} from "./utils/create-query";
-import {ViewModelType} from "../../types/view-model";
-import {UserOutputType} from "../../types/users/output";
 import {errorsHandler} from "../../utils/errors-handler";
 
 
@@ -59,8 +51,14 @@ export class BlogController {
 
 	async getAllPosts(req: RequestWithSearchTermsAndParams<Params, QueryPostRequestType>, res: Response) {
 		try {
+			let posts;
 			const {sortData} = createQuery(req.query);
-			const posts = await this.postsQueryRepository.getAllPosts(sortData, req.params.id,);
+
+			if (req.user) {
+				posts = await this.postsQueryRepository.getAllPosts(sortData, req.params.id, req.user.id);
+			} else {
+				posts = await this.postsQueryRepository.getAllPosts(sortData, req.params.id,);
+			}
 			res.status(HTTP_STATUSES.OK_200).json(posts);
 		}catch (err) {
 			errorsHandler(res, err);
@@ -80,7 +78,7 @@ export class BlogController {
 	async createPost(req: RequestWithBodyAndParams<Params, PostReqBodyCreateType>, res: Response) {
 		try{
 			const createdPostId = await this.postService.createNewPost(req.body, req.params.id); // CHANGE AFTER POSTS REFACTORING
-			const createdPost = await this.postsQueryRepository.getPostById(createdPostId.id);
+			const createdPost = await this.postsQueryRepository.getPostById(createdPostId);
 			res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
 		}catch (err){
 			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
@@ -89,8 +87,12 @@ export class BlogController {
 
 	async updateBlog(req: RequestWithBodyAndParams<Params, UpdateBlogDto>, res: Response) {
 		try{
-			await this.blogsService.updateBlog(req.params.id, req.body);
-			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+			const isUpdate = await this.blogsService.updateBlog(req.params.id, req.body);
+			if (isUpdate) {
+				res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+			}else{
+				throw new Error();
+			}
 		}catch (err){
 			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 		}
