@@ -16,12 +16,17 @@ import {
 import {Response} from "express";
 import {PostsQueryRepository} from "../../repositories/query/posts-query-repository";
 import {HTTP_STATUSES} from "../../utils/comon";
-import {CreateCommentDataType, CreateCommentDto, SortCommentsType} from "../../types/comments/input";
+import {
+	CreateCommentDataType,
+	CreateCommentDto,
+	InputCommentLikesType,
+	SortCommentsType
+} from "../../types/comments/input";
 import {CommentsQueryRepository} from "../../repositories/query/comments-query-repository";
 import {CommentsService} from "../../domains/comments-service";
 import {PostsRepository} from "../../repositories/posts-repository";
 import {inject, injectable} from "inversify";
-import {CommentsRepository} from "../../repositories/comments-repository";
+import {errorsHandler} from "../../utils/errors-handler";
 
 @injectable()
 export class PostsController {
@@ -34,13 +39,19 @@ export class PostsController {
 
 	async getPost(req: RequestWithSearchTerms<QueryPostRequestType>, res: Response) {
 		try {
+			let posts;
 			const sortData: SortPostRepositoryType = {
 				sortBy: req.query.sortBy || "createdAt",
-				sortDirection: req.query.sortDirection || "desc",
+				sortDirection: req.query.sortDirection  ? req.query.sortDirection : "desc",
 				pageNumber: req.query.pageNumber || 1,
 				pageSize: req.query.pageSize || 10
 			};
-			const posts = await this.postsQueryRepository.getAllPosts(sortData);
+			console.log(req.user);
+			if (req.user) {
+				posts = await this.postsQueryRepository.getAllPosts(sortData, null, req.user.id);
+			} else {
+				posts = await this.postsQueryRepository.getAllPosts(sortData);
+			}
 			res.status(HTTP_STATUSES.OK_200).json(posts);
 		} catch {
 			res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
@@ -50,7 +61,13 @@ export class PostsController {
 
 	async getPostById(req: RequestWithParams<Params>, res: Response) {
 		try {
-			const post = await this.postsQueryRepository.getPostById(req.params.id);
+			let post;
+			if (req.user) {
+				post = await this.postsQueryRepository.getPostById(req.params.id, req.user.id);
+			} else {
+				post = await this.postsQueryRepository.getPostById(req.params.id);
+			}
+
 			res.status(HTTP_STATUSES.OK_200).json(post);
 		} catch(err:any) {
 			if (err.message === "not_found"){
@@ -64,7 +81,7 @@ export class PostsController {
 	async getPostComments(req: RequestWithSearchTermsAndParams<Params, any>, res: Response) {
 		const sortData: SortCommentsType = {
 			sortBy: req.query.sortBy || "createdAt",
-			sortDirection: req.query.sortDirection === "asc" ? 1 : -1,
+			sortDirection: req.query.sortDirection  ? req.query.sortDirection : "desc",
 			pageNumber: +req.query.pageNumber || 1,
 			pageSize: +req.query.pageSize || 10
 		};
@@ -78,7 +95,8 @@ export class PostsController {
 
 	async createPost(req: RequestWithBody<PostReqBodyCreateType>, res: Response) {
 		try {
-			const createdPost = await this.postService.createNewPost(req.body);
+			const createdPostId = await this.postService.createNewPost(req.body);
+			const createdPost = await this.postsQueryRepository.getPostById(createdPostId);
 			res.status(HTTP_STATUSES.CREATED_201).json(createdPost);
 		} catch {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
@@ -103,8 +121,23 @@ export class PostsController {
 	async updatePost(req: RequestWithBodyAndParams<Params, UpdatePostDto>, res: Response) {
 		try {
 			const isUpdated = await this.postService.updatePost(req.body, req.params.id);
+			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 		}catch {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+		}
+	}
+
+	async updateLikeStatus(req: RequestWithBodyAndParams<Params, InputCommentLikesType>, res: Response) {
+		try {
+			const user = {
+				id: req.user.id,
+				login: req.user.login
+			};
+
+			await this.postService.updateLike(user, req.params.id, req.body.likeStatus);
+			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+		} catch (err) {
+			errorsHandler(res, err);
 		}
 	}
 
