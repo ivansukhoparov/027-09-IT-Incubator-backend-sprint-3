@@ -16,7 +16,7 @@ import {
 } from "../types/blogs/input";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
 import {validationBlogsChains} from "../middlewares/validators/blogs-validators";
-import {AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
+import {AuthorizationMiddleware, softAuthentificationMiddleware} from "../middlewares/auth/auth-middleware";
 import {HTTP_STATUSES} from "../utils/comon";
 import {BlogsQueryRepository} from "../repositories/query/blogs-query-repository";
 import {validationPostsChainsNoBlogId} from "../middlewares/validators/posts-validators";
@@ -36,7 +36,7 @@ blogsRouter.get("/", blogController.getAllBlogs.bind(blogController));
 
 blogsRouter.get("/:id", blogController.getBlogById.bind(blogController));
 
-blogsRouter.get("/:id/posts", blogController.getAllPosts.bind(blogController));
+blogsRouter.get("/:id/posts",	softAuthentificationMiddleware, blogController.getAllPosts.bind(blogController));
 
 blogsRouter.post("/",
 	AuthorizationMiddleware,

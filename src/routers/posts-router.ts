@@ -1,11 +1,10 @@
 import {Router} from "express";
-import {softAuthentificationMiddleware, AuthorizationMiddleware} from "../middlewares/auth/auth-middleware";
+import {AuthorizationMiddleware, softAuthentificationMiddleware} from "../middlewares/auth/auth-middleware";
 import {validationPostsChains} from "../middlewares/validators/posts-validators";
 import {inputValidationMiddleware} from "../middlewares/validators/input-validation-middleware";
-import {validateComment, validatePost} from "../middlewares/validators/comments-validator";
+import {validateComment, validateLike, validatePost} from "../middlewares/validators/comments-validator";
 import {PostsController} from "./controllers/posts-controller";
 import {container} from "../composition-root";
-import {CommentsController} from "./controllers/comments-controller";
 
 export const postsRouter = Router();
 
@@ -13,14 +12,16 @@ const postsController = container.resolve<PostsController>(PostsController);
 
 //GET
 postsRouter.get("/",
+	softAuthentificationMiddleware,
 	postsController.getPost.bind(postsController));
 
-postsRouter.get("/:id/comments", softAuthentificationMiddleware,
-
+postsRouter.get("/:id/comments",
+	softAuthentificationMiddleware,
 	validatePost,
 	postsController.getPostComments.bind(postsController));
 
 postsRouter.get("/:id",
+	softAuthentificationMiddleware,
 	postsController.getPostById.bind(postsController));
 
 
@@ -44,6 +45,12 @@ postsRouter.put("/:id",
 	validationPostsChains(),
 	inputValidationMiddleware,
 	postsController.updatePost.bind(postsController));
+
+postsRouter.put("/:id/like-status",
+	AuthorizationMiddleware,
+	validateLike,
+	inputValidationMiddleware,
+	postsController.updateLikeStatus.bind(postsController));
 
 // DELETE
 postsRouter.delete("/:id", AuthorizationMiddleware,
