@@ -1,9 +1,10 @@
 import {BlogsRepository} from "../repositories/blogs-repository";
-import {PostDtoType} from "../types/posts/output";
+import {PostDtoType, PostLikeDto} from "../types/posts/output";
 import {PostsRepository} from "../repositories/posts-repository";
-import {postMapper} from "../types/posts/mapper";
 import {PostReqBodyCreateType, UpdatePostDto} from "../types/posts/input";
 import {injectable} from "inversify";
+import {LikeStatusType} from "../types/comments/input";
+
 @injectable()
 export class PostsService {
 
@@ -27,10 +28,9 @@ export class PostsService {
 			createdAt: createdAt.toISOString()
 		};
 
-		const newPost = await this.postRepository.createPost(newPostData);
-		if (!newPost) throw new Error("not_found");
+		const newPostId = await this.postRepository.createPost(newPostData);
 
-		return postMapper(newPost);
+		return newPostId;
 	}
 
 	async updatePost(updateData: PostReqBodyCreateType, postId: string) {
@@ -48,11 +48,19 @@ export class PostsService {
 		};
 
 		const isUpdated = await this.postRepository.updatePost(postId, updatePostData);
-		if (!isUpdated) throw new Error("not_found");
 
-		const updatedPost = await this.postRepository.getPostById(postId);
-		if (!updatedPost) throw new Error("not_found");
+		return isUpdated;
+	}
 
-		return postMapper(updatedPost);
+	async updateLike(user: {id: string,login: string}, postId: string, status: LikeStatusType) {
+		const createdAt = (new Date()).toISOString();
+		const updateModel: PostLikeDto = {
+			postId: postId,
+			likedUserId: user.id,
+			likedUserName: user.login,
+			addedAt: createdAt,
+			status: status
+		};
+		await this.postRepository.updatePostLike(updateModel);
 	}
 }
