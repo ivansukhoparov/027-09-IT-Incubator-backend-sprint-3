@@ -1,7 +1,8 @@
 import {WithId} from "mongodb";
-import {PostOutputType, PostDtoType} from "./output";
+import {NewestLikeType, PostDtoType, PostLikeDto, PostOutputType, PostsLikesInfoType} from "./output";
 
-export const postMapper = (post: WithId<PostDtoType>): PostOutputType => {
+
+export const postMapper = (post: WithId<PostDtoType>, likes: PostsLikesInfoType):PostOutputType  => {
 	return {
 		id: post._id.toString(),
 		title: post.title,
@@ -9,7 +10,15 @@ export const postMapper = (post: WithId<PostDtoType>): PostOutputType => {
 		content: post.content,
 		blogId: post.blogId,
 		blogName: post.blogName,
-		createdAt: post.createdAt
+		createdAt: post.createdAt,
+		extendedLikesInfo: likes
 	};
+};
 
+export const postLikesMapper =(like:WithId<PostLikeDto>):NewestLikeType=>{
+	return{
+		addedAt: like.addedAt,
+		userId: like.likedUserId,
+		login: like.likedUserName
+	};
 };
