@@ -1,27 +1,21 @@
-import {PostDtoType, PostOutputType} from "../types/posts/output";
-import {postMapper} from "../types/posts/mapper";
-import {ObjectId, WithId} from "mongodb";
-import {PostModel} from "../db/mongoose/models";
+import {PostDtoType, PostLikeDto} from "../types/posts/output";
+import {ObjectId} from "mongodb";
+import {CommentLikeModel, PostLikeModel, PostModel} from "../db/mongoose/models";
 import {UpdatePostDto} from "../types/posts/input";
 import {injectable} from "inversify";
 
 @injectable()
 export class PostsRepository {
 
-	// return all posts from database
-	async getAllPosts(): Promise<PostOutputType[]> {
-		const posts: WithId<PostDtoType>[] = await PostModel.find({}).lean();
-		return posts.map(postMapper);
-	}
-
 	// return one post with given id
 	async getPostById(id: string) {
-		return PostModel.findOne({_id: new ObjectId(id)});
+		return PostModel.findOne({_id: new ObjectId(id)},);
 	}
 
 	// create new post
 	async createPost(postData: PostDtoType) {
-		return await PostModel.create(postData);
+		const newPost = await PostModel.create(postData);
+		return newPost._id.toString();
 	}
 
 	// update existing post
@@ -34,6 +28,19 @@ export class PostsRepository {
 	async deletePost(id: string) {
 		const result = await PostModel.deleteOne({_id: new ObjectId(id)});
 		return result.deletedCount === 1;
+	}
+
+	async updatePostLike(updateModel: PostLikeDto) {
+
+		const post = await PostModel.findOne({_id: new ObjectId(updateModel.postId)});
+		if (!post) throw new Error();
+		// const like = await PostLikeModel.findOne({$and: [{likedUserId: updateModel.likedUserId}, {postId: updateModel.postId}]});
+
+		const like = await PostLikeModel.findOneAndUpdate({$and: [{likedUserName: updateModel.likedUserName}, {postId: updateModel.postId}]},updateModel );
+
+		if (!like) {
+			await PostLikeModel.create(updateModel);
+		}
 	}
 }
 
