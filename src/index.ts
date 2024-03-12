@@ -24,5 +24,4 @@ const appStart = async () => {
 	}
 };
 
-
 appStart();
