@@ -1,13 +1,14 @@
 import dotenv from "dotenv";
 import "reflect-metadata";
-import {app} from "./app";
+import { appInit} from "./app";
 import {settings} from "./settings";
 import {connectDb} from "./db/connect-db";
 
 dotenv.config();
 
+const app = appInit();
 app.set("trust proxy", true);
-const appStart = async () => {
+export const appStart = async () => {
 	// connect to DataBase
 	console.log("App started at " + (new Date()).toString());
 	const dbConnection = await connectDb();

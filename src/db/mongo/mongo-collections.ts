@@ -1,4 +1,4 @@
-import {client} from "./mongo-db";
+import { db} from "./mongo-db";
 import {BlogType} from "../../types/blogs/output";
 import {PostDtoType} from "../../types/posts/output";
 import {VideoType} from "../../types/videos/output";
@@ -9,7 +9,7 @@ import {ApiRequestType, SecuritySessionType} from "../../types/security/output";
 import {settings} from "../../settings";
 
 
-export const dbBlogs = client.db(settings.env.mongoDbName);
+export const dbBlogs = db.client.db(settings.env.mongoDbName);
 
 export const blogCollection = dbBlogs.collection<BlogType>("blogs");
 export const postCollection = dbBlogs.collection<PostDtoType>("posts");
